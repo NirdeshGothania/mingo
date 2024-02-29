@@ -1,203 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// void main() {
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       debugShowCheckedModeBanner: false,
-//       theme: ThemeData(
-//         primarySwatch: Colors.red,
-//         textTheme: TextTheme(
-//           displayMedium: TextStyle(
-//               fontSize: 21,
-//               fontWeight: FontWeight.w500,
-//               fontStyle: FontStyle.italic),
-//           titleSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-//           displaySmall: TextStyle(
-//               fontSize: 21,
-//               fontWeight: FontWeight.w500,
-//               fontStyle: FontStyle.italic,
-//               color: Colors.orange),
-//         ),
-//       ),
-//       home: const MyHomePage(),
-//     );
-//   }
-// }
-
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({Key? key}) : super(key: key);
-
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   var username = TextEditingController();
-//   var lastname = TextEditingController();
-//   var email = TextEditingController(); // Add this line
-
-//   // Function to show the birthday popup
-//   void showBirthdayPopup() {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text(
-//             '🎊Happy birthday Khushi!🎊',
-//             style: TextStyle(fontSize: 17),
-//           ),
-//           content: Text(
-//             'May god fulfill all your wishes😊',
-//             style: TextStyle(fontSize: 18),
-//           ),
-//           actions: [
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               child: Text('Next'),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-
-//   void notBirthdayPopup() {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text('Coming Soon....'),
-//           content: Text('Enjoy your day!'),
-//           actions: [
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               child: Text('OK'),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(
-//           'Flutter Container',
-//           style: TextStyle(
-//             fontSize: 21,
-//             fontWeight: FontWeight.bold,
-//             color: Colors.white,
-//           ),
-//         ),
-//         backgroundColor: Colors.blue,
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Container(
-//               width: 300,
-//               child: TextField(
-//                 controller: username,
-//                 decoration: InputDecoration(
-//                   hintText: 'Enter Firstname',
-//                   enabledBorder: OutlineInputBorder(
-//                     borderRadius: BorderRadius.circular(21),
-//                     borderSide: BorderSide(
-//                       color: Colors.blue,
-//                       width: 2,
-//                     ),
-//                   ),
-//                   focusedBorder: OutlineInputBorder(
-//                     borderRadius: BorderRadius.circular(21),
-//                     borderSide: BorderSide(
-//                       color: Colors.deepOrange,
-//                       width: 2,
-//                     ),
-//                   ),
-//                   prefixIcon: Icon(
-//                     Icons.supervised_user_circle_outlined,
-//                     color: Colors.grey,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             Container(
-//               height: 11,
-//             ),
-//             Container(
-//               width: 300,
-//               child: TextField(
-//                 controller: lastname,
-//                 decoration: InputDecoration(
-//                   hintText: 'Enter Lastname',
-//                   enabledBorder: OutlineInputBorder(
-//                     borderRadius: BorderRadius.circular(21),
-//                     borderSide: BorderSide(
-//                       color: Colors.blue,
-//                       width: 2,
-//                     ),
-//                   ),
-//                   focusedBorder: OutlineInputBorder(
-//                     borderRadius: BorderRadius.circular(21),
-//                     borderSide: BorderSide(
-//                       color: Colors.deepOrange,
-//                       width: 2,
-//                     ),
-//                   ),
-//                   prefixIcon: Icon(
-//                     Icons.supervised_user_circle_outlined,
-//                     color: Colors.grey,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             Container(
-//               margin: const EdgeInsets.all(8.0),
-//               width: 100,
-//               child: ElevatedButton(
-//                 onPressed: () {
-//                   String firstName = username.text.toLowerCase();
-//                   String lastName = lastname.text.toLowerCase();
-
-//                   if (firstName == 'khushi' && lastName == 'pandit') {
-//                     // Show birthday popup for Khushi
-//                     showBirthdayPopup();
-//                   } else {
-//                     // Perform other actions or validations as needed
-//                     String uname = username.text.toString();
-//                     String uemail = email.text; // Fix here
-
-//                     notBirthdayPopup();
-
-//                     print("Name: $uname, Email: $uemail");
-//                   }
-//                 },
-//                 child: Text('Login'),
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:code_text_field/code_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:highlight/languages/cpp.dart';
@@ -293,7 +93,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           displayMedium: TextStyle(
               fontSize: 21,
               fontWeight: FontWeight.w500,
@@ -446,11 +246,11 @@ class MyHomePageState extends State<MyHomePage> {
             return Transform.scale(
               scale: ModalRoute.of(context)!.animation!.value,
               child: AlertDialog(
-                title: Text(
+                title: const Text(
                   'Comment',
                   style: TextStyle(fontSize: 17),
                 ),
-                content: Text(
+                content: const Text(
                   'Do you want to raise any concern?',
                   style: TextStyle(fontSize: 18),
                 ),
@@ -463,19 +263,19 @@ class MyHomePageState extends State<MyHomePage> {
                         hintText: 'Enter Comment',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(21),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.blue,
                             width: 2,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(21),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.deepOrange,
                             width: 2,
                           ),
                         ),
-                        prefixIcon: Icon(
+                        prefixIcon: const Icon(
                           Icons.comment_bank_rounded,
                           color: Colors.grey,
                         ),
@@ -486,7 +286,7 @@ class MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('OK'),
+                    child: const Text('OK'),
                   ),
                 ],
               ),
@@ -511,11 +311,11 @@ class MyHomePageState extends State<MyHomePage> {
             return Transform.scale(
               scale: ModalRoute.of(context)!.animation!.value,
               child: AlertDialog(
-                title: Text(
+                title: const Text(
                   'Login Successful!',
                   style: TextStyle(fontSize: 17),
                 ),
-                content: Text(
+                content: const Text(
                   'Coming Soon....',
                   style: TextStyle(fontSize: 18),
                 ),
@@ -524,7 +324,7 @@ class MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('OK'),
+                    child: const Text('OK'),
                   ),
                 ],
               ),
@@ -540,14 +340,14 @@ class MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('User no registered!'),
-          content: Text('Enjoy your day!'),
+          title: const Text('User no registered!'),
+          content: const Text('Enjoy your day!'),
           actions: [
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -555,64 +355,11 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   print('App lifecycle state changed: $state');
-  //   super.didChangeAppLifecycleState(state);
-
-  //   switch (state) {
-  //     case AppLifecycleState.resumed:
-  //       // App has come to the foreground
-  //       print('App resumed');
-  //       break;
-  //     case AppLifecycleState.inactive:
-  //       // App is in an inactive state, possibly transitioning between foreground and background
-  //       print('App inactive');
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       // App is in the background
-  //       print('App paused');
-  //       break;
-  //     case AppLifecycleState.detached:
-  //       // App is detached (not running)
-  //       print('App detached');
-  //       break;
-  //     case AppLifecycleState.hidden:
-  //       // App is detached (not running)
-  //       print('App hidden');
-  //       break;
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // final source = "void main() {\n    printf(\"Hello, world!\");\n}";
-    // // Instantiate the CodeController
-    // _codeController = CodeController(
-    //   text: source,
-    //   language: cpp,
-
-    //   // theme: monokaiSublimeTheme,
-    // );
-    // return
-    // VisibilityDetector(
-    //   key: Key('my-app-key'),
-    //   onVisibilityChanged: (info) {
-    //     setState(() {
-    //       if (info.visibleFraction == 1.0) {
-    //         // App is not visible (minimized, split screen, or switched to another app)
-    //         print('App is visible');
-    //       } else {
-    //         // App is visible
-    //         print('App is not visible');
-    //       }
-    //     });
-    //     setState(() {});
-    //   },
-    //   child:
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Code Arena',
           style: TextStyle(
             fontSize: 21,
@@ -630,8 +377,8 @@ class MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       _commentalert();
                     },
-                    child: Icon(Icons.comment)),
-                SizedBox(
+                    child: const Icon(Icons.comment)),
+                const SizedBox(
                   width: 5,
                 ),
                 ElevatedButton(
@@ -648,7 +395,7 @@ class MyHomePageState extends State<MyHomePage> {
                       }
                     });
                   },
-                  child: Row(
+                  child: const Row(
                     children: [
                       Text(
                         'Start Contest',
@@ -669,220 +416,48 @@ class MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body:
-
-          // Center(
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       Container(
-          //         width: 300,
-          //         child: TextField(
-          //           controller: username,
-          //           decoration: InputDecoration(
-          //             hintText: 'Enter Roll number',
-          //             enabledBorder: OutlineInputBorder(
-          //               borderRadius: BorderRadius.circular(21),
-          //               borderSide: BorderSide(
-          //                 color: Colors.blue,
-          //                 width: 2,
-          //               ),
-          //             ),
-          //             focusedBorder: OutlineInputBorder(
-          //               borderRadius: BorderRadius.circular(21),
-          //               borderSide: BorderSide(
-          //                 color: Colors.deepOrange,
-          //                 width: 2,
-          //               ),
-          //             ),
-          //             prefixIcon: Icon(
-          //               Icons.supervised_user_circle_outlined,
-          //               color: Colors.grey,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //       Container(
-          //         height: 11,
-          //       ),
-          //       // Container(
-          //       //   width: 300,
-          //       //   child: TextField(
-          //       //     controller: lastname,
-          //       //     obscureText: true,
-          //       //     decoration: InputDecoration(
-          //       //       hintText: 'Password',
-          //       //       enabledBorder: OutlineInputBorder(
-          //       //         borderRadius: BorderRadius.circular(21),
-          //       //         borderSide: BorderSide(
-          //       //           color: Colors.blue,
-          //       //           width: 2,
-          //       //         ),
-          //       //       ),
-          //       //       focusedBorder: OutlineInputBorder(
-          //       //         borderRadius: BorderRadius.circular(21),
-          //       //         borderSide: BorderSide(
-          //       //           color: Colors.deepOrange,
-          //       //           width: 2,
-          //       //         ),
-          //       //       ),
-          //       //       prefixIcon: Icon(
-          //       //         Icons.key_rounded,
-          //       //         color: Colors.grey,
-          //       //       ),
-          //       //       suffixIcon: IconButton(
-          //       //           onPressed: () {
-          //       //             obscureText:
-          //       //             false;
-          //       //             setState(() {});
-          //       //           },
-          //       //           icon: Icon(
-          //       //             Icons.remove_red_eye_rounded,
-          //       //           )),
-          //       //     ),
-          //       //   ),
-          //       // ),
-          //       Container(
-          //         width: 300,
-          //         child: TextField(
-          //           controller: lastname,
-          //           obscureText: _obscureText, // Use a state variable here
-          //           decoration: InputDecoration(
-          //             hintText: 'Password',
-          //             enabledBorder: OutlineInputBorder(
-          //               borderRadius: BorderRadius.circular(21),
-          //               borderSide: BorderSide(
-          //                 color: Colors.blue,
-          //                 width: 2,
-          //               ),
-          //             ),
-          //             focusedBorder: OutlineInputBorder(
-          //               borderRadius: BorderRadius.circular(21),
-          //               borderSide: BorderSide(
-          //                 color: Colors.deepOrange,
-          //                 width: 2,
-          //               ),
-          //             ),
-          //             prefixIcon: Icon(
-          //               Icons.key_rounded,
-          //               color: Colors.grey,
-          //             ),
-          //             suffixIcon: IconButton(
-          //               onPressed: () {
-          //                 setState(() {
-          //                   _obscureText =
-          //                       !_obscureText; // Toggle the state variable
-          //                 });
-          //               },
-          //               icon: Icon(
-          //                 _obscureText
-          //                     ? Icons.visibility_off_rounded
-          //                     : Icons.visibility_rounded,
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //       Container(
-          //         margin: const EdgeInsets.all(8.0),
-          //         width: 100,
-          //         child: ElevatedButton(
-          //           onPressed: () {
-          //             String firstName = username.text.toLowerCase();
-          //             String lastName = lastname.text.toLowerCase();
-
-          //             if (firstName == 'nirdesh' && lastName == 'gothania') {
-          //               showBirthdayPopup();
-          //             } else {
-          //               // Perform other actions or validations as needed
-          //               String uname = username.text.toString();
-          //               String uemail = email.text;
-          //               notBirthdayPopup();
-
-          //               print("Name: $uname, Email: $uemail");
-          //             }
-          //           },
-          //           child: Text(
-          //             'Login',
-          //           ),
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
-
-          SplitView(
+      body: SplitView(
         viewMode: SplitViewMode.Horizontal,
         children: [
           SingleChildScrollView(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.contestDetails['contestName'],
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 // SizedBox(height: 10),
 
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-                Text(
+                const Text(
                   'Problem Statement',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 // SizedBox(height: 10),
                 Text(widget.contestDetails['question']),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-                Text(
+                const Text(
                   'Input Format',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 // SizedBox(height: 10),
                 Text(widget.contestDetails['inputFormat']),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-                Text(
+                const Text(
                   'Output Format',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 // SizedBox(height: 10),
                 Text(widget.contestDetails['outputFormat']),
-                SizedBox(height: 15),
-
-                // Container(
-                //   child: ListView.builder(
-                //     itemCount: widget.contestDetails['sampleTestCases'].length,
-                //     itemBuilder: (context, index) {
-                //       final testCase =
-                //           widget.contestDetails['sampleTestCases'][index];
-                //       final input = testCase['input'].isEmpty
-                //           ? ''
-                //           : testCase['input'][0]['insert'];
-                //       final output = testCase['output'].isEmpty
-                //           ? ''
-                //           : testCase['output'][0]['insert'];
-                //       final explanation = testCase['explanation'].isEmpty
-                //           ? ''
-                //           : testCase['explanation'][0]['insert'];
-
-                //       return ListTile(
-                //         title: Text('Test Case ${index + 1}'),
-                //         subtitle: Column(
-                //           crossAxisAlignment: CrossAxisAlignment.start,
-                //           children: [
-                //             Text('Input: $input'),
-                //             Text('Output: $output'),
-                //             Text('Explanation: $explanation'),
-                //           ],
-                //         ),
-                //       );
-                //     },
-                //   ),
-                // ),
-                Text(
+                const SizedBox(height: 15),
+                const Text(
                   'Sample Test Cases',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -910,22 +485,23 @@ class MyHomePageState extends State<MyHomePage> {
                           return ListTile(
                             title: Text(
                               'Test Case ${index + 1}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Input:',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text("$input"),
-                                Text(
+                                const Text(
                                   'Output:',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text("$output"),
-                                Text(
+                                const Text(
                                   'Explanation:',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
@@ -939,169 +515,39 @@ class MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
 
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-                Text(
+                const Text(
                   'Constraints',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 // SizedBox(height: 10),
                 Text(widget.contestDetails['constraints']),
 
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
               ],
             ),
           ),
-          // SingleChildScrollView(
-          //   padding: EdgeInsets.all(16.0),
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       // QuillEditor(
-          //       //   configurations: QuillEditorConfigurations(
-          //       //     controller: QuillController(
-          //       //       document: Document.fromDelta(widget.contestDetails['contestName']),
-          //       //       selection: const TextSelection.collapsed(offset: 0),
-          //       //     ),
-          //       //     readOnly: true,
-          //       //   ),
-          //       //   focusNode: FocusNode(),
-          //       //   scrollController: ScrollController(keepScrollOffset: true),
-          //       // ),
-          //       Text(
-          //         widget.contestDetails['contestName'],
-          //         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          //       ),
-          //       SizedBox(height: 16.0),
-          //       Text(
-          //         'Problem Statement:',
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //       QuillEditor(
-          //         configurations: QuillEditorConfigurations(
-          //           controller: QuillController(
-          //             document:
-          //                 Document.fromDelta(widget.contestDetails['question']),
-          //             selection: const TextSelection.collapsed(offset: 0),
-          //           ),
-          //           readOnly: true,
-          //         ),
-          //         focusNode: FocusNode(),
-          //         scrollController: ScrollController(keepScrollOffset: true),
-          //       ),
-          //       SizedBox(height: 16.0),
-          //       Text(
-          //         'Input Format:',
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //       QuillEditor(
-          //         configurations: QuillEditorConfigurations(
-          //           controller: QuillController(
-          //             document: Document.fromDelta(
-          //                 widget.contestDetails['inputFormat']),
-          //             selection: const TextSelection.collapsed(offset: 0),
-          //           ),
-          //           readOnly: true,
-          //         ),
-          //         focusNode: FocusNode(),
-          //         scrollController: ScrollController(keepScrollOffset: true),
-          //       ),
-          //       SizedBox(height: 16.0),
-          //       Text(
-          //         'Output Format:',
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //       QuillEditor(
-          //         configurations: QuillEditorConfigurations(
-          //           controller: QuillController(
-          //             document: Document.fromDelta(
-          //                 widget.contestDetails['outputFormat']),
-          //             selection: const TextSelection.collapsed(offset: 0),
-          //           ),
-          //           readOnly: true,
-          //         ),
-          //         focusNode: FocusNode(),
-          //         scrollController: ScrollController(keepScrollOffset: true),
-          //       ),
-          //       SizedBox(height: 16.0),
-          //       Text(
-          //         'Sample Test Cases:',
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //       Container(
-          //         child: QuillEditor(
-          //           configurations: QuillEditorConfigurations(
-          //             controller: QuillController(
-          //               document: Document.fromDelta(
-          //                   widget.contestDetails['sampleTestCases']),
-          //               selection: const TextSelection.collapsed(offset: 0),
-          //             ),
-          //             readOnly: true,
-          //           ),
-          //           focusNode: FocusNode(),
-          //           scrollController: ScrollController(keepScrollOffset: true),
-          //         ),
-          //         color: Colors.blue.shade50,
-          //       ),
-          //       SizedBox(height: 16.0),
-          //       // Text(
-          //       //   'Explanation:',
-          //       //   style: TextStyle(fontWeight: FontWeight.bold),
-          //       // ),
-          //       // QuillEditor(
-          //       //   configurations: QuillEditorConfigurations(
-          //       //     controller: QuillController(
-          //       //       document: Document.fromDelta(explanation),
-          //       //       selection: const TextSelection.collapsed(offset: 0),
-          //       //     ),
-          //       //     readOnly: true,
-          //       //   ),
-          //       //   focusNode: FocusNode(),
-          //       //   scrollController: ScrollController(keepScrollOffset: true),
-          //       // ),
-          //       // SizedBox(height: 16.0),
-          //       Text(
-          //         'Constraints:',
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //       QuillEditor(
-          //         configurations: QuillEditorConfigurations(
-          //           controller: QuillController(
-          //             document: Document.fromDelta(
-          //                 widget.contestDetails['constraints']),
-          //             selection: const TextSelection.collapsed(offset: 0),
-          //           ),
-          //           readOnly: true,
-          //         ),
-          //         focusNode: FocusNode(),
-          //         scrollController: ScrollController(keepScrollOffset: true),
-          //       ),
-          //       SizedBox(height: 16.0),
-          //     ],
-          //   ),
-          // ),
           Container(
             // height: double.infinity,
-            
+
             child: SplitView(
               // gripSize: 6, // Size of the grip
               controller: _controller,
               viewMode: SplitViewMode.Vertical,
               children: [
-                Expanded(
-                  // flex: 7,
+                Container(
+                  color: const Color(0xff23241f),
+                  height: MediaQuery.of(context).size.height * 0.73,
                   child: SingleChildScrollView(
-                    child: Container(
-                      child: CodeTheme(
-                        data: CodeThemeData(
-                          styles: monokaiSublimeTheme,
-                        ),
-                        child: CodeField(
-                          focusNode: _focusNode,
-                          controller: _codeController!,
-                          textStyle: TextStyle(fontFamily: 'SourceCode'),
-                          maxLines: 20,
-                        ),
+                    child: CodeTheme(
+                      data: const CodeThemeData(
+                        styles: monokaiSublimeTheme,
+                      ),
+                      child: CodeField(
+                        focusNode: _focusNode,
+                        controller: _codeController!,
+                        textStyle: const TextStyle(fontFamily: 'SourceCode'),
                       ),
                     ),
                   ),
@@ -1110,13 +556,13 @@ class MyHomePageState extends State<MyHomePage> {
                   child: Container(
                     child: Column(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 6,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(
+                            const Text(
                               'Input',
                               style: TextStyle(
                                 fontSize: 17,
@@ -1140,7 +586,7 @@ class MyHomePageState extends State<MyHomePage> {
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.pink,
                                 ),
-                                child: Row(
+                                child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
@@ -1191,7 +637,7 @@ class MyHomePageState extends State<MyHomePage> {
                                       ),
                                       // statesController: stateControl,
                                       // statesController: null,
-                                      child: Row(
+                                      child: const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
@@ -1213,12 +659,12 @@ class MyHomePageState extends State<MyHomePage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 4,
                                   ),
                                   Text(
                                     '${_clickCount} / ${_maxClicks}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 11, color: Colors.grey),
                                   ),
                                 ],
@@ -1230,7 +676,7 @@ class MyHomePageState extends State<MyHomePage> {
                                     _controller.weights = [0.73, 0.27];
                                     setState(() {});
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                       Icons.arrow_drop_down_circle_outlined)),
                             ),
                           ],
@@ -1239,7 +685,7 @@ class MyHomePageState extends State<MyHomePage> {
                         //   height: 25,
                         // ),
 
-                        SizedBox(
+                        const SizedBox(
                           height: 11,
                         ),
                         Container(
@@ -1247,7 +693,7 @@ class MyHomePageState extends State<MyHomePage> {
                           child: TextField(
                             controller: _inputController,
                             maxLines: 7,
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
 
                             //   decoration: InputDecoration(
                             //     labelText: 'Input',
@@ -1255,10 +701,10 @@ class MyHomePageState extends State<MyHomePage> {
                             // ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 25,
                         ),
-                        Text(
+                        const Text(
                           'Output',
                           style: TextStyle(
                             fontSize: 17,
@@ -1266,7 +712,7 @@ class MyHomePageState extends State<MyHomePage> {
                           ),
                           textAlign: TextAlign.right,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 11,
                         ),
                         Container(
@@ -1274,7 +720,8 @@ class MyHomePageState extends State<MyHomePage> {
                           width: double.infinity,
                           child: Text(
                             '$output',
-                            style: TextStyle(fontSize: 15, color: Colors.white),
+                            style: const TextStyle(
+                                fontSize: 15, color: Colors.white),
                           ),
                           color: Colors.black,
                         ),
