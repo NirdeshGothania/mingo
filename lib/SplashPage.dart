@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'package:mingo/adminPage.dart';
+import 'package:mingo/loginPage.dart';
 import 'package:mingo/main.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class SplashPage1 extends StatefulWidget {
   @override
@@ -15,7 +18,7 @@ class SplashPage extends State<SplashPage1> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MyHomePage(),
+          builder: (context) => loginPage1(),
         ),
       );
     });

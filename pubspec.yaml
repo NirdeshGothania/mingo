@@ -40,6 +40,21 @@ dependencies:
   code_text_field: ^1.1.0
   flutter_highlight: ^0.7.0
   http: ^1.1.2
+  visibility_detector: ^0.4.0+2
+  flutter_focus_watcher: ^2.0.0
+  split_view: ^3.2.1
+  fullscreen_window: ^1.0.3
+  firebase_core: ^2.25.4
+  firebase_auth: ^4.17.4
+  # firebase_storage: ^11.6.5
+  cloud_firestore: ^4.15.4
+  fluttertoast: ^8.2.4
+  flutter_quill: ^9.2.11
+  firebase_database: ^10.4.5
+  firebase_storage: ^11.6.6
+  file_picker: ^6.1.1
+
+  
   # flutter_webview_plugin: ^0.4.0
 
 dev_dependencies:
@@ -52,6 +67,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  js: ^0.6.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
