@@ -139,6 +139,7 @@ class MyHomePageState extends State<MyHomePage> {
   int _maxClicks = 100;
   bool _isFullScreen = false;
   var _comment = TextEditingController();
+  // var diffIcon = const Icon(Icons.arrow_drop_down_circle_outlined);
 
   // final Map<String, dynamic> contestDetails;
 
@@ -157,6 +158,7 @@ class MyHomePageState extends State<MyHomePage> {
     // Move the instantiation to initState to maintain state
     _focusNode.addListener(_handleFocusChange);
     _controller.weights = [0.73, 0.27];
+    FullScreenWindow.setFullScreen(true);
 
     // WidgetsBinding.instance?.addObserver(this);
     final source =
