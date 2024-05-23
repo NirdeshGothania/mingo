@@ -1,18 +1,17 @@
 import 'dart:async';
-import 'package:mingo/main.dart';
-import 'package:flutter/material.dart';
-import 'package:mingo/loginPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:http/http.dart' as http;
-import 'dart:html' as html;
-import 'dart:js' as js;
 import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:mingo/loginPage.dart';
 
 // import 'package:firebase_auth/firebase_auth.dart';
 
 class signupPage1 extends StatefulWidget {
+  const signupPage1({super.key});
+
   @override
   State<signupPage1> createState() => signupPage();
 }
@@ -39,10 +38,10 @@ class signupPage extends State<signupPage1> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(title: Text('Fill the required fields'));
+            return const AlertDialog(title: Text('Fill the required fields'));
           });
     } else {
-      FirebaseAuth _auth = FirebaseAuth.instance;
+      FirebaseAuth auth = FirebaseAuth.instance;
       // try {
       //   userCredential = await FirebaseAuth.instance
       //       .createUserWithEmailAndPassword(email: email, password: password);
@@ -57,11 +56,11 @@ class signupPage extends State<signupPage1> {
       //       });
       // }
 
-      _auth
+      auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => loginPage1()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const loginPage1()));
       }).onError((error, stackTrace) {
         toastMessage(error.toString());
       });
@@ -73,7 +72,7 @@ class signupPage extends State<signupPage1> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Login Page',
           style: TextStyle(color: Colors.white),
         ),
@@ -84,15 +83,15 @@ class signupPage extends State<signupPage1> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              child: Text(
+              child: const Text(
                 'Welcome to The Code Arena!',
                 style: TextStyle(fontSize: 21),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
-            Container(
+            SizedBox(
               width: 300,
               child: TextField(
                 controller: rollnumber,
@@ -100,19 +99,19 @@ class signupPage extends State<signupPage1> {
                   hintText: 'Enter RollNumber',
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(21),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.blue,
                       width: 2,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(21),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.deepOrange,
                       width: 2,
                     ),
                   ),
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.supervised_user_circle_outlined,
                     color: Colors.grey,
                   ),
@@ -122,7 +121,7 @@ class signupPage extends State<signupPage1> {
             Container(
               height: 11,
             ),
-            Container(
+            SizedBox(
               width: 300,
               child: TextField(
                 // obscureText: true,
@@ -131,19 +130,19 @@ class signupPage extends State<signupPage1> {
                   hintText: 'Enter Name',
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(21),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.blue,
                       width: 2,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(21),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.deepOrange,
                       width: 2,
                     ),
                   ),
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.supervised_user_circle_outlined,
                     color: Colors.grey,
                   ),
@@ -153,7 +152,7 @@ class signupPage extends State<signupPage1> {
             Container(
               height: 11,
             ),
-            Container(
+            SizedBox(
               width: 300,
               child: TextField(
                 controller: email,
@@ -161,19 +160,19 @@ class signupPage extends State<signupPage1> {
                   hintText: 'Enter Email',
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(21),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.blue,
                       width: 2,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(21),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.deepOrange,
                       width: 2,
                     ),
                   ),
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.supervised_user_circle_outlined,
                     color: Colors.grey,
                   ),
@@ -183,7 +182,7 @@ class signupPage extends State<signupPage1> {
             Container(
               height: 11,
             ),
-            Container(
+            SizedBox(
               width: 300,
               child: TextField(
                 controller: password,
@@ -191,19 +190,19 @@ class signupPage extends State<signupPage1> {
                   hintText: 'Enter Password',
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(21),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.blue,
                       width: 2,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(21),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Colors.deepOrange,
                       width: 2,
                     ),
                   ),
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.supervised_user_circle_outlined,
                     color: Colors.grey,
                   ),
@@ -218,25 +217,25 @@ class signupPage extends State<signupPage1> {
               width: 150,
               child: ElevatedButton(
                 onPressed: () {
-                  String name_f = name.text.toString();
-                  String rollnumber_f = rollnumber.text.toString();
-                  String email_f = email.text.toString();
-                  String password_f = password.text.toString();
+                  String nameF = name.text.toString();
+                  String rollnumberF = rollnumber.text.toString();
+                  String emailF = email.text.toString();
+                  String passwordF = password.text.toString();
 
-                  register(rollnumber_f, name_f, email_f, password_f);
-                  signUp(rollnumber_f, name_f, email_f, password_f);
+                  register(rollnumberF, nameF, emailF, passwordF);
+                  signUp(rollnumberF, nameF, emailF, passwordF);
                   // setState(() {});
                 },
-                child: Text('SignUp'),
+                child: const Text('SignUp'),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Already Have an Account?",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
@@ -245,9 +244,9 @@ class signupPage extends State<signupPage1> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => loginPage1()));
+                              builder: (context) => const loginPage1()));
                     },
-                    child: Text(
+                    child: const Text(
                       'Login',
                       style: TextStyle(color: Colors.blue),
                     ))
@@ -262,7 +261,7 @@ class signupPage extends State<signupPage1> {
 
 Future<void> register(
     String? rollnumber, String? name, String? email, String? password) async {
-  final serverUrl =
+  const serverUrl =
       'https://proj-server.onrender.com/createuser'; // Replace with your server URL
 
   try {
