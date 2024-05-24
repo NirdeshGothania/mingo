@@ -43,7 +43,7 @@ class loginPage extends State<loginPage1> {
     setState(() {
       isLoading = true; // Set loading state to true
     });
-    const serverUrl = 'https://proj-server.onrender.com/createuser';
+    const serverUrl = '${sessionConstants.host}/createuser';
     _auth
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
@@ -60,7 +60,7 @@ class loginPage extends State<loginPage1> {
 
   void login1(String email, String password) async {
     const serverUrl =
-        'https://proj-server.onrender.com/login'; // Assuming this is your login endpoint
+        '${sessionConstants.host}/login'; // Assuming this is your login endpoint
     try {
       final response = await http.post(Uri.parse(serverUrl),
           headers: {'Content-Type': 'application/json'},

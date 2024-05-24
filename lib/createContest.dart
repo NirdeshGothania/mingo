@@ -337,8 +337,7 @@ class _CreateContestState extends State<CreateContest> {
     String email,
     String code,
   ) async {
-    const serverUrl =
-        'http://localhost:3000/createcontest1'; // Replace with your server URL
+    const serverUrl = '${sessionConstants.host}/createcontest1'; // Replace with your server URL
 
     try {
       final response = await http.post(

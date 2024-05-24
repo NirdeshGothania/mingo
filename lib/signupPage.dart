@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:mingo/loginPage.dart';
+import 'sessionConstants.dart';
 
 // import 'package:firebase_auth/firebase_auth.dart';
 
@@ -262,7 +263,7 @@ class signupPage extends State<signupPage1> {
 Future<void> register(
     String? rollnumber, String? name, String? email, String? password) async {
   const serverUrl =
-      'https://proj-server.onrender.com/createuser'; // Replace with your server URL
+      '${sessionConstants.host}/createuser'; // Replace with your server URL
 
   try {
     final response = await http.post(

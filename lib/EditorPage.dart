@@ -644,7 +644,7 @@ class EditorPageState extends State<EditorPage> {
 
   Future<void> runCode(String? code, String input) async {
     const serverUrl =
-        'https://proj-server.onrender.com/runcode'; // Replace with your server URL
+        '${sessionConstants.host}/runcode'; // Replace with your server URL
 
     try {
       final response = await http.post(
@@ -677,7 +677,7 @@ class EditorPageState extends State<EditorPage> {
 
   Future<void> test(String? code, String? questionId, String? contestId, String? studentId) async {
     const serverUrl =
-        'http://localhost:3000/test'; // Replace with your server URL
+        '${sessionConstants.host}/test'; // Replace with your server URL
     try {
       final response = await http.post(
         Uri.parse(serverUrl),

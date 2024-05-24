@@ -13,6 +13,7 @@ import 'package:flutter_quill/quill_delta.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:mingo/addQuestionPage.dart';
+import 'package:mingo/sessionConstants.dart';
 import 'package:uuid/uuid.dart';
 // import 'package:flutter_cloud_storage/storage_service.dart';
 
@@ -176,7 +177,7 @@ class ContestPage extends State<ContestPage1> {
       List<Map<String, dynamic>> sampleTestCases,
       List<Map<String, dynamic>> hiddenTestCases,
       var constraints) async {
-    const serverUrl = 'http://localhost:3000/createContest';
+    const serverUrl = '${sessionConstants.host}/createContest';
 
     http
         .post(
