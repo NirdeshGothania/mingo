@@ -118,9 +118,9 @@ class EditorPageState extends State<EditorPage> {
     // fetchCodeFiles();
 
     _codeController = CodeController(
-          text: widget.contestQuestions[quesIndex].code,
-          language: cpp,
-        );
+      text: widget.contestQuestions[quesIndex].code,
+      language: cpp,
+    );
 
     endDateDateTime =
         DateFormat('dd-MM-yyyy').parse(widget.contestDetails!['endDate']);
@@ -531,8 +531,12 @@ class EditorPageState extends State<EditorPage> {
                                               .code = res!;
 
                                           UploadCodeFiles();
-                                          // print(inp);
-                                          // test(res);
+                                          test(
+                                              res,
+                                              widget.contestQuestions[quesIndex]
+                                                  .questionId,
+                                              widget.contestQuestions[quesIndex]
+                                                  .contestId, sessionConstants.email2!);
                                         },
 
                                         style: ElevatedButton.styleFrom(
@@ -671,14 +675,15 @@ class EditorPageState extends State<EditorPage> {
     }
   }
 
-  Future<void> test(String? code) async {
+  Future<void> test(String? code, String? questionId, String? contestId, String? studentId) async {
     const serverUrl =
-        'https://proj-server.onrender.com/test'; // Replace with your server URL
+        'http://localhost:3000/test'; // Replace with your server URL
     try {
       final response = await http.post(
         Uri.parse(serverUrl),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'code': code}),
+        body: jsonEncode(
+            {'code': code, 'questionId': questionId, 'contestId': contestId, 'studentId': studentId}),
       );
       output = '';
       output = output + response.body;
