@@ -92,7 +92,7 @@ class EditorPageState extends State<EditorPage> {
     setController(0);
 
     html.window.onBlur.listen((html.Event e) {
-      if (SessionConstants.isContestActive) return;
+      if (!SessionConstants.isContestActive) return;
       print("Tab blurred");
       if (!_violationActive) violationWarning();
     });
@@ -100,7 +100,7 @@ class EditorPageState extends State<EditorPage> {
     const EventStreamProvider<Event>('fullscreenchange')
         .forTarget(html.window)
         .listen((event) {
-      if (SessionConstants.isContestActive) return;
+      if (!SessionConstants.isContestActive) return;
       print('fullscreen changed');
       if (_isFullScreen) {
         if (!_violationActive) violationWarning();
@@ -109,13 +109,13 @@ class EditorPageState extends State<EditorPage> {
     });
 
     html.window.onPageHide.listen((html.Event e) {
-      if (SessionConstants.isContestActive) return;
+      if (!SessionConstants.isContestActive) return;
       print("Tab hidden");
       if (!_violationActive) violationWarning();
     });
 
     html.document.onVisibilityChange.listen((html.Event e) {
-      if (SessionConstants.isContestActive) return;
+      if (!SessionConstants.isContestActive) return;
       if (html.document.visibilityState == 'hidden') {
         print("Tab switched");
         if (!_violationActive) violationWarning();
@@ -382,6 +382,7 @@ class EditorPageState extends State<EditorPage> {
                       // backgroundColor: Colors.red,
                       ),
                   onPressed: () async {
+                    SessionConstants.isContestActive = false;
                     await FirebaseFirestore.instance
                         .collection('createContest')
                         .doc(widget.contestDetails!['contestId'])
@@ -390,7 +391,6 @@ class EditorPageState extends State<EditorPage> {
                         .set({
                       'status': 2,
                     }).then((value) {
-                      SessionConstants.isContestActive = false;
                       Navigator.of(context)
                         ..pop()
                         ..pop()
