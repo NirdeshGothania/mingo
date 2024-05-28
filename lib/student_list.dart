@@ -13,6 +13,7 @@ class StudentList extends StatefulWidget {
 
 class _StudentListState extends State<StudentList> {
   List<Map<String, dynamic>> registeredData = [];
+  Map<String, String> names = {};
 
   @override
   void initState() {
@@ -28,15 +29,33 @@ class _StudentListState extends State<StudentList> {
           .collection('register')
           .get();
 
+      List<Map<String, dynamic>> fetchedData = snapshot.docs.map((doc) {
+        var data = doc.data();
+        data['docId'] = doc.id;
+        return data;
+      }).toList();
+
+      for (var student in fetchedData) {
+        fetchName(student['docId'].toString());
+      }
+
       setState(() {
-        registeredData = snapshot.docs.map((doc) {
-          var data = doc.data();
-          data['docId'] = doc.id;
-          return data;
-        }).toList();
+        registeredData = fetchedData;
       });
     } catch (e) {
       print('Error fetching registered students: $e');
+    }
+  }
+
+  Future<void> fetchName(String email) async {
+    try {
+      var snapshot =
+          await FirebaseFirestore.instance.collection('Users').doc(email).get();
+      setState(() {
+        names[email] = snapshot.data()?['name'] ?? 'Unknown';
+      });
+    } catch (e) {
+      print('Error fetching name for $email: $e');
     }
   }
 
@@ -50,14 +69,23 @@ class _StudentListState extends State<StudentList> {
               itemCount: registeredData.length,
               itemBuilder: (context, index) {
                 var student = registeredData[index];
+                var email = student['docId'].toString();
+                var studentName = names[email] ?? 'Loading...';
+
                 return ListTile(
-                  title: Text(student['docId'].toString()),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(studentName),
+                    ],
+                  ),
+                  subtitle: Text(email),
                   trailing: FilledButton.icon(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ContestView(
                                 contestDetails: widget.contestDetails,
-                                email: student['docId'].toString(),
+                                email: email,
                               )));
                     },
                     icon: const Icon(Icons.remove_red_eye_outlined),
