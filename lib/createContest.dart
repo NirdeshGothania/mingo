@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart'; // Import intl package for date formatting
 import 'package:mingo/addQuestionPage.dart';
+import 'package:mingo/common_widgets.dart';
 import 'package:mingo/timePicker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -62,15 +63,12 @@ class _CreateContestState extends State<CreateContest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: const CustomAppbar(
         automaticallyImplyLeading: true,
-        leading: const BackButton(color: Colors.white),
-        title: const Text(
+        title: Text(
           'Create Contest',
-          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xff2b2d7f),
-        actions: const [],
+        actions: [],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -99,7 +97,7 @@ class _CreateContestState extends State<CreateContest> {
                     'Start Date',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () async {
                       final selectedDate = await showDatePicker(
                         context: context,
@@ -125,7 +123,7 @@ class _CreateContestState extends State<CreateContest> {
                     'Start Time',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () async {
                       TimeOfDay? minimumTime;
                       if (DateFormat('dd-MM-yyyy').format(startDate!) ==
@@ -166,7 +164,7 @@ class _CreateContestState extends State<CreateContest> {
                     'End Date',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () async {
                       final selectedDate = await showDatePicker(
                         context: context,
@@ -190,7 +188,7 @@ class _CreateContestState extends State<CreateContest> {
                     'End Time',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: endDate == startDate
                         ? () async {
                             final selectedTime = await showCustomTimePicker(
@@ -255,7 +253,7 @@ class _CreateContestState extends State<CreateContest> {
                 maxLines: 5,
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
+              FilledButton.icon(
                 onPressed: () {
                   // var contestid = widget.contestDetails!['contestId'] ?? const Uuid().v4().toString();
                   code = const Uuid().v4().substring(1, 5);
@@ -270,7 +268,7 @@ class _CreateContestState extends State<CreateContest> {
                       endTime,
                       description.text,
                       rules.text,
-                      sessionConstants.email!,
+                      SessionConstants.email!,
                       code,
                     );
                     Navigator.push(
@@ -283,7 +281,8 @@ class _CreateContestState extends State<CreateContest> {
                     );
                   }
                 },
-                child: const Text('Save and Next'),
+                icon: const Icon(Icons.save_as),
+                label: const Text('Save and Next'),
               ),
             ],
           ),
@@ -337,7 +336,8 @@ class _CreateContestState extends State<CreateContest> {
     String email,
     String code,
   ) async {
-    const serverUrl = '${sessionConstants.host}/createcontest1'; // Replace with your server URL
+    const serverUrl =
+        '${SessionConstants.host}/createcontest1'; // Replace with your server URL
 
     try {
       final response = await http.post(

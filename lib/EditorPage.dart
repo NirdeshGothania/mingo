@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:html' as html;
+import 'dart:html';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_text_field/code_text_field.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
@@ -13,8 +15,11 @@ import 'package:fullscreen_window/fullscreen_window.dart';
 import 'package:highlight/languages/cpp.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:mingo/registerContest.dart';
+import 'package:mingo/FinishContest.dart';
+import 'package:mingo/OpenContest.dart';
+import 'package:mingo/common_widgets.dart';
 import 'package:mingo/sessionConstants.dart';
+import 'package:mingo/studentPage.dart';
 import 'package:split_view/split_view.dart';
 
 class EditorPage extends StatefulWidget {
@@ -33,8 +38,6 @@ class EditorPageState extends State<EditorPage> {
   var username = TextEditingController();
   var lastname = TextEditingController();
   var email = TextEditingController();
-  // var contest = contestDetails;
-  final bool _obscureText = true;
   CodeController? _codeController;
   var output = '';
   final TextEditingController _inputController = TextEditingController();
@@ -43,9 +46,8 @@ class EditorPageState extends State<EditorPage> {
   final SplitViewController _controller = SplitViewController();
   var submitCount = 3;
   MaterialStatesController? stateControl;
-  int _clickCount = 0;
-  final int _maxClicks = 100;
-  final bool _isFullScreen = false;
+  var _violationActive = false;
+  var _isFullScreen = false;
   final _comment = TextEditingController();
   var filteredContests;
   int quesIndex = 0;
@@ -62,16 +64,11 @@ class EditorPageState extends State<EditorPage> {
   final FocusNode _focusNodekey = FocusNode();
   var count = 0;
 
-  void _incrementClickCount() {
-    _clickCount++;
-    if (_clickCount >= _maxClicks) {
-      _clickCount = _maxClicks;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
+
+    SessionConstants.isContestActive = true;
 
     _focusNode.addListener(_handleFocusChange);
 
@@ -79,44 +76,6 @@ class EditorPageState extends State<EditorPage> {
     Future.delayed(const Duration(milliseconds: 10)).then((value) {
       FullScreenWindow.setFullScreen(true);
     });
-
-    html.window.onBlur.listen((html.Event e) {
-      print("Tab blurred");
-    });
-
-    // html.window.onKeyPress.listen((event) {
-    //   //
-    // });
-
-    html.window.onFocus.listen((html.Event e) {
-      print("Tab coding");
-    });
-
-    html.window.onResize.listen((html.Event e) {
-      count++;
-      print("Tab resized");
-    });
-
-    html.window.onKeyPress.listen((event) {
-      print('keycode $event pressed from initstate');
-    });
-
-    html.window.onPageHide.listen((html.Event e) {
-      print("Tab Hide");
-    });
-
-    // Add a listener for the visibility change event (when the tab is switched).
-    html.document.onVisibilityChange.listen((html.Event e) {
-      if (html.document.visibilityState == 'hidden') {
-        print("Tab switched");
-      }
-      if (html.document.visibilityState == 'visible') {
-        print("Tab Focussed");
-      }
-    });
-
-    // fetchCodeFiles();
-
     _codeController = CodeController(
       text: widget.contestQuestions[quesIndex].code,
       language: cpp,
@@ -131,13 +90,147 @@ class EditorPageState extends State<EditorPage> {
     endTimeDateTime = TimeOfDay.fromDateTime(
         DateFormat('HH:mm').parse(widget.contestDetails!['endTime']));
     setController(0);
-    // _focusNodekey.requestFocus();
+
+    html.window.onBlur.listen((html.Event e) {
+      if (SessionConstants.isContestActive) return;
+      print("Tab blurred");
+      if (!_violationActive) violationWarning();
+    });
+
+    const EventStreamProvider<Event>('fullscreenchange')
+        .forTarget(html.window)
+        .listen((event) {
+      if (SessionConstants.isContestActive) return;
+      print('fullscreen changed');
+      if (_isFullScreen) {
+        if (!_violationActive) violationWarning();
+      }
+      _isFullScreen = !_isFullScreen;
+    });
+
+    html.window.onPageHide.listen((html.Event e) {
+      if (SessionConstants.isContestActive) return;
+      print("Tab hidden");
+      if (!_violationActive) violationWarning();
+    });
+
+    html.document.onVisibilityChange.listen((html.Event e) {
+      if (SessionConstants.isContestActive) return;
+      if (html.document.visibilityState == 'hidden') {
+        print("Tab switched");
+        if (!_violationActive) violationWarning();
+      } else if (html.document.visibilityState == 'visible') {
+        print("Tab focused");
+      }
+    });
+  }
+
+  void violationWarning() {
+    _violationActive = true;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AnimatedBuilder(
+          animation: CurvedAnimation(
+            parent: ModalRoute.of(context)!.animation!,
+            curve: Curves.easeInOutBack,
+          ),
+          builder: (context, child) {
+            return Transform.scale(
+              scale: ModalRoute.of(context)!.animation!.value,
+              child: AlertDialog(
+                title: const Text(
+                  'Warning! Violation Detected',
+                  style: TextStyle(fontSize: 17),
+                ),
+                content: const Text(
+                  'Continue before the timer ends or you will be debarred from the contest.',
+                  style: TextStyle(fontSize: 18),
+                ),
+                actions: [
+                  SizedBox(
+                    width: 300,
+                    child: TimerCountdown(
+                      format: CountDownTimerFormat.secondsOnly,
+                      endTime: DateTime.now().add(const Duration(
+                        seconds: 5,
+                      )),
+                      onEnd: () async {
+                        await FirebaseFirestore.instance
+                            .collection('createContest')
+                            .doc(widget.contestDetails!['contestId'])
+                            .collection('register')
+                            .doc(SessionConstants.email2)
+                            .set({
+                          'status': -1,
+                        }).then((value) async {
+                          for (int i = 0;
+                              i < widget.contestQuestions.length;
+                              i++) {
+                            await FirebaseFirestore.instance
+                                .collection('createContest')
+                                .doc(widget.contestDetails!['contestId'])
+                                .collection('register')
+                                .doc(SessionConstants.email2)
+                                .collection('result')
+                                .doc(widget.contestQuestions[i].questionId)
+                                .set({
+                              'marks': 0,
+                              'testCasesPassed': null,
+                            });
+                          }
+                          SessionConstants.isContestActive = false;
+                          Navigator.of(context)
+                            ..pop()
+                            ..pop()
+                            ..pop();
+                          Future.delayed(const Duration(milliseconds: 10))
+                              .then((value) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => FinishContest(
+                                  contestQuestions: widget.contestQuestions,
+                                  contestDetails: widget.contestDetails,
+                                ),
+                              ),
+                            );
+                            FullScreenWindow.setFullScreen(false);
+                          }).catchError((error) {
+                            print('Exit Contest: $error');
+                          });
+                        });
+                      },
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      FullScreenWindow.setFullScreen(true);
+                      _violationActive = false;
+                      Navigator.of(context).pop();
+                    },
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Color(0xff2b2d7f))),
+                    child: const Text('CONTINUE'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
     //
+  }
+
+  void endContest() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const StudentPage1()));
   }
 
   void _handleFocusChange() {
@@ -184,7 +277,7 @@ class EditorPageState extends State<EditorPage> {
   void UploadCodeFiles() async {
     for (int i = 0; i < widget.contestQuestions.length; i++) {
       String inputFilePath =
-          'contest_${widget.contestQuestions[i].contestId}/Submissions/question_${widget.contestQuestions[i].questionId}/${sessionConstants.email2!.replaceAll(RegExp('@iiitr.ac.in'), '')}';
+          'contest_${widget.contestQuestions[i].contestId}/Submissions/question_${widget.contestQuestions[i].questionId}/${SessionConstants.email2!.replaceAll(RegExp('@iiitr.ac.in'), '')}';
       await firebase_storage.FirebaseStorage.instance
           .ref(inputFilePath)
           .putString(widget.contestQuestions[i].code);
@@ -215,29 +308,10 @@ class EditorPageState extends State<EditorPage> {
                 actions: [
                   SizedBox(
                     width: 300,
-                    child: TextField(
+                    child: CustomTextField(
                       controller: email,
-                      decoration: InputDecoration(
-                        hintText: 'Enter Comment',
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(21),
-                          borderSide: const BorderSide(
-                            color: Colors.blue,
-                            width: 2,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(21),
-                          borderSide: const BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2,
-                          ),
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.comment_bank_rounded,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      hintText: 'Comment',
+                      iconData: Icons.comment,
                     ),
                   ),
                   ElevatedButton(
@@ -258,8 +332,7 @@ class EditorPageState extends State<EditorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+      appBar: CustomAppbar(
         automaticallyImplyLeading: true,
         title: const Text(
           'Code Arena',
@@ -269,7 +342,6 @@ class EditorPageState extends State<EditorPage> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color(0xff2b2d7f),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -305,24 +377,49 @@ class EditorPageState extends State<EditorPage> {
                 const SizedBox(
                   width: 5,
                 ),
-                ElevatedButton(
+                FilledButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                  ),
-                  onPressed: () {},
+                      // backgroundColor: Colors.red,
+                      ),
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection('createContest')
+                        .doc(widget.contestDetails!['contestId'])
+                        .collection('register')
+                        .doc(SessionConstants.email2)
+                        .set({
+                      'status': 2,
+                    }).then((value) {
+                      SessionConstants.isContestActive = false;
+                      Navigator.of(context)
+                        ..pop()
+                        ..pop()
+                        ..pop();
+                      Future.delayed(const Duration(milliseconds: 10))
+                          .then((value) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => FinishContest(
+                              contestQuestions: widget.contestQuestions,
+                              contestDetails: widget.contestDetails,
+                            ),
+                          ),
+                        );
+                        FullScreenWindow.setFullScreen(false);
+                      });
+                      print('Entered Contest successfully');
+                    }).catchError((error) {
+                      print('Entered Contest: $error');
+                    });
+                  },
                   child: const Row(
                     children: [
                       Text(
-                        'Submit Contest',
+                        'End Contest',
                         style: TextStyle(
-                          color: Colors.white,
                           fontSize: 16.0,
                         ),
                       ),
-                      Icon(
-                        Icons.play_arrow_rounded,
-                        color: Colors.white,
-                      )
                     ],
                   ),
                 ),
@@ -536,7 +633,8 @@ class EditorPageState extends State<EditorPage> {
                                               widget.contestQuestions[quesIndex]
                                                   .questionId,
                                               widget.contestQuestions[quesIndex]
-                                                  .contestId, sessionConstants.email2!);
+                                                  .contestId,
+                                              SessionConstants.email2!);
                                         },
 
                                         style: ElevatedButton.styleFrom(
@@ -644,7 +742,7 @@ class EditorPageState extends State<EditorPage> {
 
   Future<void> runCode(String? code, String input) async {
     const serverUrl =
-        '${sessionConstants.host}/runcode'; // Replace with your server URL
+        '${SessionConstants.host}/runcode'; // Replace with your server URL
 
     try {
       final response = await http.post(
@@ -675,15 +773,20 @@ class EditorPageState extends State<EditorPage> {
     }
   }
 
-  Future<void> test(String? code, String? questionId, String? contestId, String? studentId) async {
+  Future<void> test(String? code, String? questionId, String? contestId,
+      String? studentId) async {
     const serverUrl =
-        '${sessionConstants.host}/test'; // Replace with your server URL
+        '${SessionConstants.host}/test'; // Replace with your server URL
     try {
       final response = await http.post(
         Uri.parse(serverUrl),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(
-            {'code': code, 'questionId': questionId, 'contestId': contestId, 'studentId': studentId}),
+        body: jsonEncode({
+          'code': code,
+          'questionId': questionId,
+          'contestId': contestId,
+          'studentId': studentId
+        }),
       );
       output = '';
       output = output + response.body;

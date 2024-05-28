@@ -13,6 +13,7 @@ import 'package:flutter_quill/quill_delta.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:mingo/addQuestionPage.dart';
+import 'package:mingo/common_widgets.dart';
 import 'package:mingo/sessionConstants.dart';
 import 'package:uuid/uuid.dart';
 // import 'package:flutter_cloud_storage/storage_service.dart';
@@ -138,24 +139,6 @@ class ContestPage extends State<ContestPage1> {
     return cleanedDelta;
   }
 
-  // void _initializeTestCasesControllers() {
-  //   _controllers.clear();
-  //   for (var i = 0; i < widget.sampleTestCases.length; i += 3) {
-  //     _controllers.add(QuillController(
-  //       document: Document.fromDelta(widget.sampleTestCases[i] as Delta),
-  //       selection: const TextSelection.collapsed(offset: 0),
-  //     ));
-  //     _controllers.add(QuillController(
-  //       document: Document.fromDelta(widget.sampleTestCases[i + 1] as Delta),
-  //       selection: const TextSelection.collapsed(offset: 0),
-  //     ));
-  //     _controllers.add(QuillController(
-  //       document: Document.fromDelta(widget.sampleTestCases[i + 2] as Delta),
-  //       selection: const TextSelection.collapsed(offset: 0),
-  //     ));
-  //   }
-  // }
-
   Future<void> uploadFile(Uint8List fileBytes, String filePath) async {
     try {
       await firebase_storage.FirebaseStorage.instance
@@ -177,7 +160,7 @@ class ContestPage extends State<ContestPage1> {
       List<Map<String, dynamic>> sampleTestCases,
       List<Map<String, dynamic>> hiddenTestCases,
       var constraints) async {
-    const serverUrl = '${sessionConstants.host}/createContest';
+    const serverUrl = '${SessionConstants.host}/createContest';
 
     http
         .post(
@@ -234,14 +217,11 @@ class ContestPage extends State<ContestPage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppbar(
         automaticallyImplyLeading: true,
-        leading: const BackButton(color: Colors.white),
         title: const Text(
           'Create Question',
-          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xff2b2d7f),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),

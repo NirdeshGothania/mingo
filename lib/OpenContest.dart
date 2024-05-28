@@ -5,33 +5,35 @@ import 'package:flutter_quill/quill_delta.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:mingo/common_widgets.dart';
 import 'package:mingo/sessionConstants.dart';
 
 import 'EditorPage.dart';
 
-class registerContest extends StatefulWidget {
+class OpenContest extends StatefulWidget {
   final Map<String, dynamic>? contestDetails;
   final Map<String, dynamic>? statusData;
-  const registerContest(
+  const OpenContest(
       {Key? key, required this.contestDetails, required this.statusData})
       : super(key: key);
 
   @override
-  State<registerContest> createState() => _registerContestState();
+  State<OpenContest> createState() => _OpenContestState();
 }
 
-class _registerContestState extends State<registerContest> {
+class _OpenContestState extends State<OpenContest> {
   late DateTime endDateDateTime;
   late DateTime startDateDateTime;
   late TimeOfDay startTimeDateTime;
   late TimeOfDay endTimeDateTime;
   bool allowEnter = false;
-  var code_controller = TextEditingController();
+  var codeController = TextEditingController();
   late List<ContestQuestion> contestQuestions;
+  DateTime? startDateTime;
+  DateTime? endDateTime;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     endDateDateTime =
         DateFormat('dd-MM-yyyy').parse(widget.contestDetails!['endDate']);
@@ -41,6 +43,15 @@ class _registerContestState extends State<registerContest> {
         DateFormat('HH:mm').parse(widget.contestDetails!['startTime']));
     endTimeDateTime = TimeOfDay.fromDateTime(
         DateFormat('HH:mm').parse(widget.contestDetails!['endTime']));
+
+    var et = (widget.contestDetails!['endTime'] as String).split(':');
+    endDateTime = DateFormat('dd-MM-yyyy:hh:mm').parse(
+        widget.contestDetails!['endDate'] +
+            ':${et[0].padLeft(2, '0')}:${et[1].padLeft(2, '0')}');
+    var st = (widget.contestDetails!['startTime'] as String).split(':');
+    startDateTime = DateFormat('dd-MM-yyyy:hh:mm').parse(
+        widget.contestDetails!['startDate'] +
+            ':${st[0].padLeft(2, '0')}:${st[1].padLeft(2, '0')}');
   }
 
   Future<void> fetchData() async {
@@ -86,7 +97,7 @@ class _registerContestState extends State<registerContest> {
           .child('/Submissions')
           .child('/question_${contestQuestions[i].questionId}')
           .child(
-              '/${sessionConstants.email2!.replaceAll(RegExp('@iiitr.ac.in'), '')}');
+              '/${SessionConstants.email2!.replaceAll(RegExp('@iiitr.ac.in'), '')}');
       try {
         String newCodeFile = '';
         final downloadUrl = await ref.getDownloadURL();
@@ -104,7 +115,7 @@ class _registerContestState extends State<registerContest> {
   Future<void> uploadCodeFiles() async {
     for (int i = 0; i < contestQuestions.length; i++) {
       String inputFilePath =
-          'contest_${contestQuestions[i].contestId}/Submissions/question_${contestQuestions[i].questionId}/${sessionConstants.email2!.replaceAll(RegExp('@iiitr.ac.in'), '')}';
+          'contest_${contestQuestions[i].contestId}/Submissions/question_${contestQuestions[i].questionId}/${SessionConstants.email2!.replaceAll(RegExp('@iiitr.ac.in'), '')}';
       print(contestQuestions[i].code);
       await firebase_storage.FirebaseStorage.instance
           .ref(inputFilePath)
@@ -114,23 +125,19 @@ class _registerContestState extends State<registerContest> {
 
   @override
   Widget build(BuildContext context) {
-    // print(contestName);
     return Scaffold(
-      appBar: AppBar(
+      appBar: const CustomAppbar(
         automaticallyImplyLeading: true,
-        leading: const BackButton(color: Colors.white),
-        title: const Text(
+        title: Text(
           'Registered Contest Page',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xff2b2d7f),
-        actions: const [],
+        actions: [],
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
@@ -149,29 +156,38 @@ class _registerContestState extends State<registerContest> {
               const SizedBox(
                 height: 20,
               ),
-              const Text(
-                'Starts in',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
+              startDateTime!.isAfter(DateTime.now())
+                  ? const Text(
+                      'Starts in',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    )
+                  : const Text(
+                      'Started',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
               const SizedBox(
                 height: 20,
               ),
 
-              TimerCountdown(
-                format: CountDownTimerFormat.daysHoursMinutesSeconds,
-                endTime: DateTime.now().add(Duration(
-                  days: startDateDateTime.isAfter(DateTime.now())
-                      ? startDateDateTime.day - DateTime.now().day
-                      : 0,
-                  hours: startTimeDateTime.hour - TimeOfDay.now().hour,
-                  minutes: startTimeDateTime.minute - TimeOfDay.now().minute,
-                  seconds: 0,
-                )),
-                onEnd: () {
-                  allowEnter = true;
-                  setState(() {});
-                },
-              ),
+              if (startDateTime!.isAfter(DateTime.now()))
+                TimerCountdown(
+                  format: CountDownTimerFormat.daysHoursMinutesSeconds,
+                  endTime: DateTime.now().add(Duration(
+                    days: startDateDateTime.isAfter(DateTime.now())
+                        ? startDateDateTime.day - DateTime.now().day
+                        : 0,
+                    hours: startTimeDateTime.hour - TimeOfDay.now().hour,
+                    minutes: startTimeDateTime.minute - TimeOfDay.now().minute,
+                    seconds: 0,
+                  )),
+                  onEnd: () {
+                    setState(() {
+                      allowEnter = true;
+                    });
+                  },
+                ),
 
               const SizedBox(
                 height: 20,
@@ -181,7 +197,7 @@ class _registerContestState extends State<registerContest> {
                 future: fetchData(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return ElevatedButton(
+                    return FilledButton.icon(
                         onPressed: (!allowEnter)
                             ? () {
                                 showDialog(
@@ -189,62 +205,26 @@ class _registerContestState extends State<registerContest> {
                                     builder: (BuildContext context) {
                                       return AlertDialog(
                                         title: const Text("Enter the Code"),
-                                        content: TextField(
-                                          onSubmitted: (_) {},
-                                          controller: code_controller,
-                                          decoration: InputDecoration(
-                                            hintText: 'Enter code',
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(21),
-                                              borderSide: const BorderSide(
-                                                color: Color(0xff2b2d7f),
-                                                width: 2,
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(21),
-                                              borderSide: const BorderSide(
-                                                color: Color.fromARGB(
-                                                    255, 172, 24, 14),
-                                                width: 2,
-                                              ),
-                                            ),
-                                            prefixIcon: const Icon(
-                                              Icons
-                                                  .supervised_user_circle_outlined,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context)
-                                                  .pop(); // Close the dialog
-                                            },
-                                            child: const Text("Cancel"),
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              var code = code_controller.text
-                                                  .toString();
-                                              if (code ==
-                                                  widget.contestDetails![
-                                                      'code']) {
-                                                await FirebaseFirestore.instance
-                                                    .collection('createContest')
-                                                    .doc(widget.contestDetails![
-                                                        'contestId'])
-                                                    .collection('register')
-                                                    .doc(
-                                                        sessionConstants.email2)
-                                                    .set({
-                                                  'status': 1,
-                                                }).then((value) {
-                                                  Navigator.pushReplacement(
-                                                    context,
+                                        content: CustomTextField(
+                                          iconData: Icons.password,
+                                          onSubmitted: (_) async {
+                                            var code =
+                                                codeController.text.toString();
+                                            if (code ==
+                                                widget
+                                                    .contestDetails!['code']) {
+                                              await FirebaseFirestore.instance
+                                                  .collection('createContest')
+                                                  .doc(widget.contestDetails![
+                                                      'contestId'])
+                                                  .collection('register')
+                                                  .doc(SessionConstants.email2)
+                                                  .set({
+                                                'status': 1,
+                                              }).then((value) {
+                                                Navigator.of(context)
+                                                  ..pop()
+                                                  ..push(
                                                     MaterialPageRoute(
                                                       builder: (context) =>
                                                           EditorPage(
@@ -255,6 +235,66 @@ class _registerContestState extends State<registerContest> {
                                                       ),
                                                     ),
                                                   );
+                                                print(
+                                                    'Entered Contest successfully');
+                                              }).catchError((error) {
+                                                print(
+                                                    'Entered Contest: $error');
+                                              });
+                                            } else {
+                                              Navigator.of(context).pop();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content:
+                                                      Text('Incorrect Code'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          controller: codeController,
+                                          hintText: 'Code',
+                                          obscureText: true,
+                                        ),
+                                        actions: <Widget>[
+                                          FilledButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                            child: const Text("Cancel"),
+                                          ),
+                                          FilledButton(
+                                            onPressed: () async {
+                                              var code = codeController.text
+                                                  .toString();
+                                              if (code ==
+                                                  widget.contestDetails![
+                                                      'code']) {
+                                                await FirebaseFirestore.instance
+                                                    .collection('createContest')
+                                                    .doc(widget.contestDetails![
+                                                        'contestId'])
+                                                    .collection('register')
+                                                    .doc(
+                                                        SessionConstants.email2)
+                                                    .set({
+                                                  'status': 1,
+                                                }).then((value) {
+                                                  Navigator.of(context)
+                                                    ..pop()
+                                                    ..push(
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            EditorPage(
+                                                          contestQuestions:
+                                                              contestQuestions,
+                                                          contestDetails: widget
+                                                              .contestDetails,
+                                                        ),
+                                                      ),
+                                                    );
                                                   print(
                                                       'Entered Contest successfully');
                                                 }).catchError((error) {
@@ -280,9 +320,10 @@ class _registerContestState extends State<registerContest> {
                                     });
                               }
                             : null,
-                        child: const Text('Enter Contest'));
+                        icon: const Icon(Icons.arrow_right),
+                        label: const Text('Enter Contest'));
                   } else {
-                    return const ElevatedButton(
+                    return const FilledButton(
                       onPressed: null,
                       child: Text('Loading...'),
                     );

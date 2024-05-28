@@ -5,38 +5,75 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/quill_delta.dart';
+import 'package:intl/intl.dart';
+import 'package:mingo/common_widgets.dart';
 import 'package:mingo/createContest.dart';
 import 'package:mingo/loginPage.dart';
 import 'package:mingo/sessionConstants.dart';
+import 'package:mingo/student_list.dart';
 
-class adminPage1 extends StatefulWidget {
-  const adminPage1({super.key});
+class AdminPage1 extends StatefulWidget {
+  const AdminPage1({super.key});
 
   @override
-  State<adminPage1> createState() => adminPage();
+  State<AdminPage1> createState() => AdminPage();
 }
 
-class adminPage extends State<adminPage1> {
+class AdminPage extends State<AdminPage1> {
   final _auth = FirebaseAuth.instance;
   final LinkedHashMap<Delta, dynamic> contestDetails =
       LinkedHashMap<Delta, dynamic>();
+  var adminName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getName();
+  }
+
+  void getName() async {
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(SessionConstants.email)
+        .get()
+        .then((value) {
+      final nameData = value.data();
+      setState(() {
+        adminName = nameData!['name'];
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppbar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          'Admin Page',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          'Hi, $adminName',
         ),
-        backgroundColor: const Color(0xff2b2d7f),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                ElevatedButton(
+                Center(
+                    child: FilledButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const CreateContest(contestDetails: null),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.create),
+                        label: const Text('Create Contest'))),
+                const SizedBox(
+                  width: 5,
+                ),
+                FilledButton.icon(
                     onPressed: () {
                       _auth.signOut();
                       Navigator.pushReplacement(
@@ -46,106 +83,109 @@ class adminPage extends State<adminPage1> {
                         ),
                       );
                     },
-                    child: const Text('Sign Out')),
-                const SizedBox(
-                  width: 5,
-                ),
-                Container(
-                  // color: Colors.blue,
-                  child: Center(
-                      child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const CreateContest(contestDetails: null),
-                              ),
-                            );
-                          },
-                          child: const Text('Create Contest'))),
-                ),
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Sign Out')),
               ],
             ),
           ),
         ],
       ),
-      body: Container(
-        child: Center(
-          child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('createContest')
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
-              // var contestDetails;
-              final contests = snapshot.data!.docs;
-              final filteredContests = contests.where((contest) {
-                final contestData = contest.data() as Map<String, dynamic>;
-                return contestData['email'] == sessionConstants.email;
-              }).toList();
+      body: Center(
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('createContest')
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            // var contestDetails;
+            final contests = snapshot.data!.docs;
+            final filteredContests = contests.where((contest) {
+              final contestData = contest.data() as Map<String, dynamic>;
+              return contestData['email'] == SessionConstants.email;
+            }).toList();
 
-              return ListView.builder(
-                itemCount: filteredContests.length,
-                itemBuilder: (context, index) {
-                  final contest = filteredContests[index];
-                  final contestData = contest.data() as Map<String, dynamic>;
-                  print(contestData);
-                  print(contestData.runtimeType);
-                  final contestName = contestData['contestName'];
-                  return ListTile(
-                    title: Text(
-                      contestName,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              "Start Date: ${contestData['startDate']} Start time: ${contestData['startTime']}"),
-                          Text(
-                              "End Date: ${contestData['endDate']} End time: ${contestData['endTime']}"),
-                        ]), // Add additional information as needed
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize
-                          .min, // Ensure the row takes only the necessary space
+            return ListView.builder(
+              itemCount: filteredContests.length,
+              itemBuilder: (context, index) {
+                final contest = filteredContests[index];
+                final contestData = contest.data() as Map<String, dynamic>;
+                print(contestData);
+                print(contestData.runtimeType);
+                final contestName = contestData['contestName'];
+                var et = (contestData['endTime'] as String).split(':');
+                var endDateTime = DateFormat('dd-MM-yyyy:hh:mm').parse(
+                    contestData['endDate'] +
+                        ':${et[0].padLeft(2, '0')}:${et[1].padLeft(2, '0')}');
+                var st = (contestData['startTime'] as String).split(':');
+                var startDateTime = DateFormat('dd-MM-yyyy:hh:mm').parse(
+                    contestData['startDate'] +
+                        ':${st[0].padLeft(2, '0')}:${st[1].padLeft(2, '0')}');
+                return ListTile(
+                  title: Text(
+                    contestName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          width: 100, // Adjust the width as needed
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CreateContest(
-                                      contestDetails: contestData),
-                                ),
-                              );
-                            },
-                            child: const Text("Edit Contest"),
-                          ),
-                        ),
-                        const SizedBox(width: 8), // Add spacing between buttons
-                        ElevatedButton(
-                          onPressed: () {
-                            _showDeleteConfirmationDialog(
-                                contestData['contestId']);
-                          },
-                          child: const Text('Delete'),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+                        Text(
+                            "Start Date: ${contestData['startDate']} Start time: ${contestData['startTime']}"),
+                        Text(
+                            "End Date: ${contestData['endDate']} End time: ${contestData['endTime']}"),
+                      ]), // Add additional information as needed
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize
+                        .min, // Ensure the row takes only the necessary space
+                    children: [
+                      FilledButton.icon(
+                          onPressed: endDateTime.isBefore(DateTime.now())
+                              ? () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => StudentList(
+                                          contestDetails: contestData),
+                                    ),
+                                  );
+                                }
+                              : null,
+                          icon: const Icon(Icons.remove_red_eye_outlined),
+                          label: const Text('View Contest')),
+                      const SizedBox(width: 8),
+                      FilledButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CreateContest(contestDetails: contestData),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit_square),
+                        label: const Text("Edit Contest"),
+                      ),
+                      const SizedBox(width: 8), // Add spacing between buttons
+                      FilledButton.icon(
+                        onPressed: () {
+                          _showDeleteConfirmationDialog(
+                              contestData['contestId']);
+                        },
+                        icon: const Icon(Icons.delete),
+                        label: const Text('Delete'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );

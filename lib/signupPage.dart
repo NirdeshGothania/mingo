@@ -5,23 +5,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:mingo/common_widgets.dart';
 import 'package:mingo/loginPage.dart';
+
 import 'sessionConstants.dart';
 
 // import 'package:firebase_auth/firebase_auth.dart';
 
-class signupPage1 extends StatefulWidget {
-  const signupPage1({super.key});
+class SignupPage1 extends StatefulWidget {
+  const SignupPage1({super.key});
 
   @override
-  State<signupPage1> createState() => signupPage();
+  State<SignupPage1> createState() => SignupPage();
 }
 
-class signupPage extends State<signupPage1> {
+class SignupPage extends State<SignupPage1> {
   var rollnumber = TextEditingController();
   var name = TextEditingController();
   var password = TextEditingController();
   var email = TextEditingController();
+  bool isLoading = false;
 
   void toastMessage(String message) {
     Fluttertoast.showToast(
@@ -43,20 +46,6 @@ class signupPage extends State<signupPage1> {
           });
     } else {
       FirebaseAuth auth = FirebaseAuth.instance;
-      // try {
-      //   userCredential = await FirebaseAuth.instance
-      //       .createUserWithEmailAndPassword(email: email, password: password);
-
-      //   Navigator.push(context,
-      //       MaterialPageRoute(builder: (context) => const MyHomePage()));
-      // } on FirebaseAuthException catch (ex) {
-      //   return showDialog(
-      //       context: context,
-      //       builder: (BuildContext context) {
-      //         return AlertDialog(title: Text('Fill the required fields'));
-      //       });
-      // }
-
       auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) {
@@ -71,153 +60,55 @@ class signupPage extends State<signupPage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'Login Page',
-          style: TextStyle(color: Colors.white),
+      appBar: const CustomAppbar(
+        automaticallyImplyLeading: true,
+        title: Text(
+          'SignUp Page',
         ),
-        backgroundColor: Colors.blue,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              child: const Text(
+        child: SizedBox(
+          width: 350,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
                 'Welcome to The Code Arena!',
-                style: TextStyle(fontSize: 21),
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
+              const SizedBox(
+                height: 15,
+              ),
+              CustomTextField(
                 controller: rollnumber,
-                decoration: InputDecoration(
-                  hintText: 'Enter RollNumber',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Colors.blue,
-                      width: 2,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 2,
-                    ),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.supervised_user_circle_outlined,
-                    color: Colors.grey,
-                  ),
-                ),
+                hintText: 'Roll number',
+                iconData: Icons.numbers,
               ),
-            ),
-            Container(
-              height: 11,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
-                // obscureText: true,
+              Container(
+                height: 11,
+              ),
+              CustomTextField(
                 controller: name,
-                decoration: InputDecoration(
-                  hintText: 'Enter Name',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Colors.blue,
-                      width: 2,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 2,
-                    ),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.supervised_user_circle_outlined,
-                    color: Colors.grey,
-                  ),
-                ),
+                hintText: 'Name',
+                iconData: Icons.supervised_user_circle,
               ),
-            ),
-            Container(
-              height: 11,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
+              Container(
+                height: 11,
+              ),
+              CustomTextField(
                 controller: email,
-                decoration: InputDecoration(
-                  hintText: 'Enter Email',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Colors.blue,
-                      width: 2,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 2,
-                    ),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.supervised_user_circle_outlined,
-                    color: Colors.grey,
-                  ),
-                ),
+                hintText: 'Email',
+                iconData: Icons.email,
               ),
-            ),
-            Container(
-              height: 11,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
+              Container(
+                height: 11,
+              ),
+              CustomTextField(
                 controller: password,
-                decoration: InputDecoration(
-                  hintText: 'Enter Password',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Colors.blue,
-                      width: 2,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 2,
-                    ),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.supervised_user_circle_outlined,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              height: 11,
-            ),
-            Container(
-              margin: const EdgeInsets.all(8.0),
-              width: 150,
-              child: ElevatedButton(
-                onPressed: () {
+                hintText: 'Password',
+                iconData: Icons.password,
+                obscureText: true,
+                onSubmitted: (p0) {
                   String nameF = name.text.toString();
                   String rollnumberF = rollnumber.text.toString();
                   String emailF = email.text.toString();
@@ -225,22 +116,52 @@ class signupPage extends State<signupPage1> {
 
                   register(rollnumberF, nameF, emailF, passwordF);
                   signUp(rollnumberF, nameF, emailF, passwordF);
-                  // setState(() {});
                 },
-                child: const Text('SignUp'),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Already Have an Account?",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Container(
+                height: 11,
+              ),
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                width: 150,
+                child: FilledButton.icon(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          String nameF = name.text.toString();
+                          String rollnumberF = rollnumber.text.toString();
+                          String emailF = email.text.toString();
+                          String passwordF = password.text.toString();
+
+                          register(rollnumberF, nameF, emailF, passwordF);
+                          signUp(rollnumberF, nameF, emailF, passwordF);
+                        },
+                  icon: const Icon(Icons.person_add_alt),
+                  label: (isLoading)
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text(
+                          'SignUp',
+                        ),
                 ),
-                TextButton(
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Already Have an Account?",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -249,54 +170,64 @@ class signupPage extends State<signupPage1> {
                     },
                     child: const Text(
                       'Login',
-                      style: TextStyle(color: Colors.blue),
-                    ))
-              ],
-            ),
-          ],
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
 
-Future<void> register(
-    String? rollnumber, String? name, String? email, String? password) async {
-  const serverUrl =
-      '${sessionConstants.host}/createuser'; // Replace with your server URL
+  void register(
+      String? rollnumber, String? name, String? email, String? password) async {
+    setState(() {
+      isLoading = true; // Set loading state to true
+    });
+    const serverUrl =
+        '${SessionConstants.host}/createuser'; // Replace with your server URL
 
-  try {
-    final response = await http.post(
-      Uri.parse(serverUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'rollnumber': rollnumber,
-        'name': name,
-        'email': email,
-        'password': password,
-        'role': 0,
-      }),
-    );
-    // output = '';
-    // output = output + response.body;
-    // Check the status code
-    if (response.statusCode == 200) {
-      print(
-          'Success!'); // You can replace this with your desired success handling logic
+    try {
+      final response = await http.post(
+        Uri.parse(serverUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'rollnumber': rollnumber,
+          'name': name,
+          'email': email,
+          'password': password,
+          'role': 0,
+        }),
+      );
+      // output = '';
+      // output = output + response.body;
+      // Check the status code
+      if (response.statusCode == 200) {
+        print(
+            'Success!'); // You can replace this with your desired success handling logic
 
-      // Read the response body
-      var responseBody = response.body;
-      print('Response body: $responseBody');
-      // You can handle or process the response body as needed
-    } else {
-      print('Error: ${response.statusCode}');
-      print('Error message: ${response.body}');
-      // Handle the error and update the UI accordingly
+        // Read the response body
+        var responseBody = response.body;
+        print('Response body: $responseBody');
+        // You can handle or process the response body as needed
+      } else {
+        setState(() {
+          isLoading = false; // Set loading state to false on error
+        });
+        print('Error: ${response.statusCode}');
+        print('Error message: ${response.body}');
+        // Handle the error and update the UI accordingly
+      }
+      // setState(() {});
+    } catch (e) {
+      setState(() {
+        isLoading = false; // Set loading state to false on error
+      });
+      print('Exception: $e');
+      // Handle exception and update the UI accordingly
     }
     // setState(() {});
-  } catch (e) {
-    print('Exception: $e');
-    // Handle exception and update the UI accordingly
   }
-  // setState(() {});
 }

@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:mingo/adminPage.dart';
-import 'package:mingo/forgotpasswordPage.dart';
+import 'package:mingo/common_widgets.dart';
+import 'package:mingo/forgot_passwordPage.dart';
 import 'package:mingo/signupPage.dart';
 import 'package:mingo/studentPage.dart';
-import 'package:mingo/test.dart';
 
 import 'sessionConstants.dart';
 
@@ -43,7 +43,7 @@ class loginPage extends State<loginPage1> {
     setState(() {
       isLoading = true; // Set loading state to true
     });
-    const serverUrl = '${sessionConstants.host}/createuser';
+    const serverUrl = '${SessionConstants.host}/createuser';
     _auth
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
@@ -58,36 +58,42 @@ class loginPage extends State<loginPage1> {
     });
   }
 
-  void login1(String email, String password) async {
+  void login1(String email, String password) {
     const serverUrl =
-        '${sessionConstants.host}/login'; // Assuming this is your login endpoint
+        '${SessionConstants.host}/login'; // Assuming this is your login endpoint
     try {
-      final response = await http.post(Uri.parse(serverUrl),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({
-            'email': email,
-            'password': password,
-          }));
-
-      if (response.statusCode == 200) {
-        final responseData = response.body;
-        
-        print(responseData);
-        if (responseData == 'isAdmin') {
-          sessionConstants.email = email;
-          // Navigate to admin page if user is an admin
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const adminPage1()));
+      http
+          .post(
+        Uri.parse(serverUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+        }),
+      )
+          .then((response) {
+        if (response.statusCode == 200) {
+          var responseData = response.body;
+          print(responseData);
+          if (responseData == 'isAdmin') {
+            SessionConstants.email = email;
+            // Navigate to admin page if user is an admin
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AdminPage1()),
+            );
+          } else {
+            // Navigate to regular user page if user is not an admin
+            SessionConstants.email2 = email;
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const StudentPage1()),
+            );
+          }
         } else {
-          // Navigate to regular user page if user is not an admin
-          sessionConstants.email2 = email;
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const StudentPage1()));
+          // Handle error response from server
+          toastMessage(response.body);
         }
-      } else {
-        // Handle error response from server
-        toastMessage(response.body);
-      }
+      });
     } catch (error) {
       // Handle network or other errors
       toastMessage(error.toString());
@@ -101,94 +107,46 @@ class loginPage extends State<loginPage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: const CustomAppbar(
         automaticallyImplyLeading: false,
-        title: const Text(
+        title: Text(
           'Login Page',
-          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xff2b2d7f),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              child: const Text(
+        child: SizedBox(
+          width: 350,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
                 'Welcome to The Code Arena!',
-                style: TextStyle(fontSize: 21),
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
+              const SizedBox(
+                height: 15,
+              ),
+              CustomTextField(
                 controller: email,
-                decoration: InputDecoration(
-                  hintText: 'Enter Email',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Color(0xff2b2d7f),
-                      width: 2,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Color.fromARGB(255, 172, 24, 14),
-                      width: 2,
-                    ),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.supervised_user_circle_outlined,
-                    color: Colors.grey,
-                  ),
-                ),
+                iconData: Icons.email,
+                hintText: 'Email',
               ),
-            ),
-            Container(
-              height: 11,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
+              const SizedBox(
+                height: 12,
+              ),
+              CustomTextField(
                 obscureText: true,
                 controller: password,
+                iconData: Icons.password,
+                hintText: 'Password',
                 onSubmitted: (_) {
                   String emailF = email.text;
                   String passwordF = password.text;
 
                   login(emailF, passwordF);
                 },
-                decoration: InputDecoration(
-                  hintText: 'Enter Password',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Color(0xff2b2d7f),
-                      width: 2,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(21),
-                    borderSide: const BorderSide(
-                      color: Color.fromARGB(255, 172, 24, 14),
-                      width: 2,
-                    ),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.supervised_user_circle_outlined,
-                    color: Colors.grey,
-                  ),
-                ),
               ),
-            ),
-            SizedBox(
-              width: 300,
-              child: Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Align(
@@ -198,27 +156,18 @@ class loginPage extends State<loginPage1> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const forgotpasswordPage1()),
+                            builder: (context) => const ForgotpasswordPage1(),
+                          ),
                         );
                       },
                       child: const Text(
                         "Forgot Password?",
-                        style: TextStyle(
-                          color: Color(0xff2b2d7f),
-                          // fontWeight: FontWeight.bold,
-                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(8.0),
-              width: 100,
-              height: 40, // Adjust button height
-              child: ElevatedButton(
+              FilledButton.icon(
                 onPressed: isLoading
                     ? null
                     : () {
@@ -227,98 +176,48 @@ class loginPage extends State<loginPage1> {
 
                         login(emailF, passwordF);
                       },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    // Button color based on the state
-                    if (states.contains(MaterialState.disabled)) {
-                      return Colors.grey; // Disable color
-                    }
-                    return const Color(0xff2b2d7f); // Normal color
-                  }),
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    if (!isLoading)
-                      const Text(
-                        'Login',
-                        style: TextStyle(color: Colors.white),
-                      ), // Show login text if not loading
-                    if (isLoading)
-                      const SizedBox(
-                        width:
-                            20, // Adjust the width of the CircularProgressIndicator
-                        height:
-                            20, // Adjust the height of the CircularProgressIndicator
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                icon: const Icon(Icons.login),
+                label: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: (isLoading)
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text(
+                          'Login',
                         ),
-                      ), // Show loading indicator if loading
-                  ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            // Align(
-            //   alignment: Alignment.center,
-            //   child: TextButton(
-            //     onPressed: () {
-            //       Navigator.push(
-            //           context,
-            //           MaterialPageRoute(
-            //               builder: (context) => forgotpasswordPage1()));
-            //     },
-            //     child: Text(
-            //       "Forgot Password?",
-            //       style: TextStyle(
-            //           color: Color(0xff2b2d7f), fontWeight: FontWeight.bold),
-            //     ),
-            //   ),
-            // ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Don't Have an account?",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Don't Have an account?",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const signupPage1()));
-                    },
-                    child: const Text(
-                      'SignUp',
-                      style: TextStyle(color: Color(0xff2b2d7f)),
-                    ))
-              ],
-            ),
-            TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const QuillTest()));
-                },
-                child: const Text(
-                  'Test',
-                  style: TextStyle(color: Color(0xff2b2d7f)),
-                )),
-
-            Container(
-              margin: const EdgeInsets.all(8.0),
-              width: 100,
-              height: 40, // Adjust button height
-              child: ElevatedButton(
+                            builder: (context) => const SignupPage1(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'SignUp',
+                      )),
+                ],
+              ),
+              ElevatedButton(
                 onPressed: isLoading
                     ? null
                     : () {
@@ -327,45 +226,25 @@ class loginPage extends State<loginPage1> {
 
                         login(emailF, passwordF);
                       },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    // Button color based on the state
-                    if (states.contains(MaterialState.disabled)) {
-                      return Colors.grey; // Disable color
-                    }
-                    return const Color(0xff2b2d7f); // Normal color
-                  }),
-                ),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     if (!isLoading)
                       const Text(
                         'Admin Login',
-                        style: TextStyle(color: Colors.white),
-                      ), // Show login text if not loading
+                      ),
                     if (isLoading)
                       const SizedBox(
-                        width:
-                            20, // Adjust the width of the CircularProgressIndicator
-                        height:
-                            20, // Adjust the height of the CircularProgressIndicator
+                        width: 20,
+                        height: 20,
                         child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          color: Colors.white,
                         ),
-                      ), // Show loading indicator if loading
+                      ),
                   ],
                 ),
               ),
-            ),
-
-            Container(
-              margin: const EdgeInsets.all(8.0),
-              width: 100,
-              height: 40, // Adjust button height
-              child: ElevatedButton(
+              ElevatedButton(
                 onPressed: isLoading
                     ? null
                     : () {
@@ -374,40 +253,26 @@ class loginPage extends State<loginPage1> {
 
                         login(emailF, passwordF);
                       },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    // Button color based on the state
-                    if (states.contains(MaterialState.disabled)) {
-                      return Colors.grey; // Disable color
-                    }
-                    return const Color(0xff2b2d7f); // Normal color
-                  }),
-                ),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     if (!isLoading)
                       const Text(
                         'Student Login',
-                        style: TextStyle(color: Colors.white),
-                      ), // Show login text if not loading
+                      ),
                     if (isLoading)
                       const SizedBox(
-                        width:
-                            20, // Adjust the width of the CircularProgressIndicator
-                        height:
-                            20, // Adjust the height of the CircularProgressIndicator
+                        width: 20,
+                        height: 20,
                         child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          color: Colors.white,
                         ),
-                      ), // Show loading indicator if loading
+                      ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

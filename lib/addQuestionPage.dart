@@ -7,6 +7,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/quill_delta.dart';
 import 'package:mingo/ContestPage.dart';
 import 'package:mingo/adminPage.dart';
+import 'package:mingo/common_widgets.dart';
 
 class addQuestionPage1 extends StatefulWidget {
   final dynamic contestId;
@@ -27,21 +28,19 @@ class addQuestionPage extends State<addQuestionPage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppbar(
         automaticallyImplyLeading: true,
-        leading: const BackButton(color: Colors.white),
         title: const Text(
           'Add Question',
-          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xff2b2d7f),
         actions: [
-          ElevatedButton(
+          FilledButton.icon(
             onPressed: () {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const adminPage1()));
+                  MaterialPageRoute(builder: (context) => const AdminPage1()));
             },
-            child: const Text('Create Contest'),
+            icon: const Icon(Icons.create),
+            label: const Text('Create Contest'),
           )
         ],
       ),
@@ -51,7 +50,7 @@ class addQuestionPage extends State<addQuestionPage1> {
             'Questions',
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
           ),
-          ElevatedButton(
+          FilledButton.icon(
             onPressed: () {
               var emptyJson = const [
                 {'insert': '\n'}
@@ -79,15 +78,8 @@ class addQuestionPage extends State<addQuestionPage1> {
                 ),
               );
             },
-            child: const Row(
-              children: [
-                Icon(Icons.add),
-                Text('Add Question'),
-                SizedBox(
-                  height: 15,
-                ),
-              ],
-            ),
+            icon: const Icon(Icons.add),
+            label: const Text('Add Question'),
           ),
           const SizedBox(
             height: 15,
@@ -125,7 +117,7 @@ class addQuestionPage extends State<addQuestionPage1> {
                         var contestListName =
                             Document.fromJson(contestData['contestName'])
                                 .toPlainText();
-                                
+
                         print(contestListName);
 
                         return ListTile(
@@ -136,43 +128,39 @@ class addQuestionPage extends State<addQuestionPage1> {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(
-                                width: 100,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ContestPage1(
-                                          questionId: contestData['questionId'],
-                                          contestId: widget.contestId,
-                                          contestName:
-                                              contestData['contestName'],
-                                          question: contestData['question'],
-                                          inputFormat:
-                                              contestData['inputFormat'],
-                                          outputFormat:
-                                              contestData['outputFormat'],
-                                          sampleTestCases:
-                                              contestData['sampleTestCases'],
-                                          hiddenTestCases:
-                                              contestData['hiddenTestCases'],
-                                          constraints:
-                                              contestData['constraints'],
-                                        ),
+                              FilledButton.icon(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ContestPage1(
+                                        questionId: contestData['questionId'],
+                                        contestId: widget.contestId,
+                                        contestName: contestData['contestName'],
+                                        question: contestData['question'],
+                                        inputFormat: contestData['inputFormat'],
+                                        outputFormat:
+                                            contestData['outputFormat'],
+                                        sampleTestCases:
+                                            contestData['sampleTestCases'],
+                                        hiddenTestCases:
+                                            contestData['hiddenTestCases'],
+                                        constraints: contestData['constraints'],
                                       ),
-                                    );
-                                  },
-                                  child: const Text("Edit Contest"),
-                                ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.edit_square),
+                                label: const Text("Edit Question"),
                               ),
                               const SizedBox(width: 8),
-                              ElevatedButton(
+                              FilledButton.icon(
                                 onPressed: () {
                                   _showDeleteConfirmationDialog(
                                       contestData['questionId']);
                                 },
-                                child: const Text('Delete'),
+                                icon: const Icon(Icons.delete),
+                                label: const Text('Delete'),
                               ),
                             ],
                           ),
