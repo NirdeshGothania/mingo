@@ -227,7 +227,7 @@ class ContestPage extends State<ContestPage1> {
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
               width: 200,
-              child: ElevatedButton(
+              child: FilledButton.icon(
                 onPressed: () async {
                   var contestId = widget.contestId;
 
@@ -288,12 +288,9 @@ class ContestPage extends State<ContestPage1> {
                       hiddenTestCasesList,
                       constraints);
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
-                child: const Text(
-                  'Add Question',
-                  style: TextStyle(color: Colors.white),
+                icon: const Icon(Icons.add),
+                label: const Text(
+                  'Add/Save Question',
                 ),
               ),
             ),
@@ -432,9 +429,7 @@ class ContestPage extends State<ContestPage1> {
                           title: Text(
                             'Sample Test Case ${index + 1}',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 21,
-                            ),
+                                fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           children: [
                             const Text(
@@ -563,7 +558,7 @@ class ContestPage extends State<ContestPage1> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        ElevatedButton(
+                        FilledButton.icon(
                           onPressed: () {
                             setState(() {
                               var x = _controllers.length;
@@ -574,7 +569,8 @@ class ContestPage extends State<ContestPage1> {
                               }
                             });
                           },
-                          child: const Text('Delete'),
+                          icon: const Icon(Icons.delete),
+                          label: const Text('Delete Sample Test Case'),
                         ),
                       ],
                     ),
@@ -582,14 +578,17 @@ class ContestPage extends State<ContestPage1> {
                 },
               ),
             ),
-
-            ElevatedButton(
+            const SizedBox(
+              height: 8,
+            ),
+            FilledButton.icon(
               onPressed: () {
                 setState(() {
                   _addNewTestCases();
                 });
               },
-              child: const Icon(Icons.add),
+              icon: const Icon(Icons.add),
+              label: const Text('Add Sample Test Case'),
             ),
 
             const SizedBox(height: 16.0),
@@ -634,10 +633,17 @@ class ContestPage extends State<ContestPage1> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Hidden Test Case ${index + 1}'),
+                        Text(
+                          'Hidden Test Case ${index + 1}',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           children: [
-                            ElevatedButton(
+                            FilledButton.icon(
                               onPressed: () async {
                                 final input =
                                     await FilePicker.platform.pickFiles(
@@ -672,10 +678,11 @@ class ContestPage extends State<ContestPage1> {
                                   hiddenTestCases[index] = testCaseData;
                                 });
                               },
-                              child: const Text('Upload Input File'),
+                              icon: const Icon(Icons.upload),
+                              label: const Text('Upload Input File'),
                             ),
                             const SizedBox(width: 8),
-                            ElevatedButton(
+                            FilledButton.icon(
                               onPressed: () async {
                                 final output =
                                     await FilePicker.platform.pickFiles(
@@ -710,27 +717,37 @@ class ContestPage extends State<ContestPage1> {
                                   hiddenTestCases[index] = testCaseData;
                                 });
                               },
-                              child: const Text('Upload Output File'),
+                              icon: const Icon(Icons.upload),
+                              label: const Text('Upload Output File'),
                             ),
                           ],
                         ),
-                        TextField(
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextField(
+                          hintText: 'Marks',
+                          iconData: Icons.score_outlined,
                           controller: TextEditingController(
                               text: testCase['marks'] ?? ''),
                           onChanged: (value) {
                             testCase['marks'] = value;
                           },
-                          decoration: const InputDecoration(
-                            labelText: 'Marks',
-                          ),
                         ),
-                        ElevatedButton(
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        FilledButton.icon(
                           onPressed: () {
                             setState(() {
                               hiddenTestCases.removeAt(index);
                             });
                           },
-                          child: const Text('Delete Hidden Test Case'),
+                          icon: const Icon(Icons.delete),
+                          label: const Text('Delete Hidden Test Case'),
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                       ],
                     ),
@@ -738,14 +755,18 @@ class ContestPage extends State<ContestPage1> {
                 },
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
 
-            ElevatedButton(
+            FilledButton.icon(
               onPressed: () {
                 setState(() {
                   hiddenTestCases.add({'marks': ''});
                 });
               },
-              child: const Text('Add Hidden Test Case'),
+              icon: const Icon(Icons.add),
+              label: const Text('Add Hidden Test Case'),
             ),
 
             const SizedBox(height: 16.0),

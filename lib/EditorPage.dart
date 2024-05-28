@@ -314,7 +314,7 @@ class EditorPageState extends State<EditorPage> {
                       iconData: Icons.comment,
                     ),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -369,18 +369,17 @@ class EditorPageState extends State<EditorPage> {
                 const SizedBox(
                   width: 50,
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      _commentalert();
-                    },
-                    child: const Icon(Icons.comment)),
+                FilledButton.icon(
+                  onPressed: () {
+                    _commentalert();
+                  },
+                  icon: const Icon(Icons.comment),
+                  label: const Text('Comment'),
+                ),
                 const SizedBox(
                   width: 5,
                 ),
-                FilledButton(
-                  style: ElevatedButton.styleFrom(
-                      // backgroundColor: Colors.red,
-                      ),
+                FilledButton.icon(
                   onPressed: () async {
                     SessionConstants.isContestActive = false;
                     await FirebaseFirestore.instance
@@ -412,15 +411,12 @@ class EditorPageState extends State<EditorPage> {
                       print('Entered Contest: $error');
                     });
                   },
-                  child: const Row(
-                    children: [
-                      Text(
-                        'End Contest',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ],
+                  icon: const Icon(Icons.flag),
+                  label: const Text(
+                    'End Contest',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    ),
                   ),
                 ),
               ],
@@ -573,7 +569,7 @@ class EditorPageState extends State<EditorPage> {
                               Container(
                                 alignment: Alignment.centerLeft,
                                 width: 100,
-                                child: ElevatedButton.icon(
+                                child: FilledButton.icon(
                                   onPressed: () {
                                     _controller.weights = [0.3, 0.7];
                                     setState(() {});
@@ -585,12 +581,8 @@ class EditorPageState extends State<EditorPage> {
                                     print(inp);
                                     runCode(res, inp);
                                   },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.pink,
-                                  ),
                                   icon: const Icon(
                                     Icons.play_arrow,
-                                    size: 20,
                                   ),
                                   label: const Text(
                                     'Run',
@@ -600,16 +592,14 @@ class EditorPageState extends State<EditorPage> {
                                   ),
                                 ),
                               ),
-                              FilledButton(
-                                style: const ButtonStyle(
-                                    backgroundColor: MaterialStatePropertyAll(
-                                        Color(0xff2b2d7f))),
+                              FilledButton.icon(
                                 onPressed: () {
                                   widget.contestQuestions[quesIndex].code =
                                       _codeController!.text.toString();
                                   UploadCodeFiles();
                                 },
-                                child: const Text('Save'),
+                                icon: const Icon(Icons.save),
+                                label: const Text('Save'),
                               ),
                               Container(
                                 child: Row(
@@ -617,7 +607,7 @@ class EditorPageState extends State<EditorPage> {
                                     Container(
                                       alignment: Alignment.centerLeft,
                                       width: 150,
-                                      child: ElevatedButton(
+                                      child: FilledButton.icon(
                                         onPressed: () {
                                           _controller.weights = [0.3, 0.8];
                                           setState(() {});
@@ -637,12 +627,10 @@ class EditorPageState extends State<EditorPage> {
                                               SessionConstants.email2!);
                                         },
 
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: Colors.green,
-                                        ),
                                         // statesController: stateControl,
                                         // statesController: null,
-                                        child: const Row(
+                                        icon: const Icon(Icons.play_arrow),
+                                        label: const Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
@@ -667,29 +655,18 @@ class EditorPageState extends State<EditorPage> {
                                     const SizedBox(
                                       width: 4,
                                     ),
-                                    // Text(
-                                    //   '$_clickCount / $_maxClicks',
-                                    //   style: const TextStyle(
-                                    //       fontSize: 11, color: Colors.grey),
-                                    // ),
                                   ],
                                 ),
                               ),
-                              Container(
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      _controller.weights = [0.73, 0.27];
-                                      setState(() {});
-                                    },
-                                    child: const Icon(
-                                        Icons.arrow_drop_down_circle_outlined)),
-                              ),
+                              FilledButton(
+                                  onPressed: () {
+                                    _controller.weights = [0.73, 0.27];
+                                    setState(() {});
+                                  },
+                                  child: const Icon(
+                                      Icons.arrow_drop_down_circle_outlined)),
                             ],
                           ),
-                          // SizedBox(
-                          //   height: 25,
-                          // ),
-
                           const SizedBox(
                             height: 11,
                           ),

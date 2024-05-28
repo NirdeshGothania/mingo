@@ -55,7 +55,7 @@ class _FinishContestState extends State<FinishContest> {
         ),
         automaticallyImplyLeading: false,
         actions: [
-          ElevatedButton(
+          FilledButton.icon(
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -68,7 +68,8 @@ class _FinishContestState extends State<FinishContest> {
               );
               checkStatus();
             },
-            child: const Padding(
+            icon: const Icon(Icons.chevron_right),
+            label: const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text('Continue'),
             ),

@@ -34,6 +34,7 @@ class CustomTextField extends StatefulWidget {
     this.iconData,
     this.obscureText = false,
     this.onSubmitted,
+    this.onChanged,
   });
 
   final TextEditingController controller;
@@ -41,6 +42,7 @@ class CustomTextField extends StatefulWidget {
   final IconData? iconData;
   final bool obscureText;
   final Function(String)? onSubmitted;
+  final Function(String)? onChanged;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -55,6 +57,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       controller: widget.controller,
       obscureText: widget.obscureText && !isVisible,
       onSubmitted: widget.onSubmitted,
+      onChanged: widget.onChanged,
       decoration: InputDecoration(
         hintText: widget.hintText,
         prefixIcon: Icon(widget.iconData),

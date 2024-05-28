@@ -201,33 +201,24 @@ class SignupPage extends State<SignupPage1> {
           'role': 0,
         }),
       );
-      // output = '';
-      // output = output + response.body;
-      // Check the status code
-      if (response.statusCode == 200) {
-        print(
-            'Success!'); // You can replace this with your desired success handling logic
 
-        // Read the response body
+      if (response.statusCode == 200) {
+        print('Success!');
+
         var responseBody = response.body;
         print('Response body: $responseBody');
-        // You can handle or process the response body as needed
       } else {
         setState(() {
-          isLoading = false; // Set loading state to false on error
+          isLoading = false;
         });
         print('Error: ${response.statusCode}');
         print('Error message: ${response.body}');
-        // Handle the error and update the UI accordingly
       }
-      // setState(() {});
     } catch (e) {
       setState(() {
-        isLoading = false; // Set loading state to false on error
+        isLoading = false;
       });
       print('Exception: $e');
-      // Handle exception and update the UI accordingly
     }
-    // setState(() {});
   }
 }

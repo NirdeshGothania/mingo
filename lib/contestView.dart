@@ -8,12 +8,12 @@ import 'package:flutter_quill/quill_delta.dart';
 import 'package:highlight/languages/cpp.dart';
 import 'package:http/http.dart' as http;
 import 'package:mingo/common_widgets.dart';
-import 'package:mingo/sessionConstants.dart';
 
 class ContestView extends StatefulWidget {
   final Map<String, dynamic>? contestDetails;
   final String? email;
-  const ContestView({super.key, required this.contestDetails, required this.email});
+  const ContestView(
+      {super.key, required this.contestDetails, required this.email});
 
   @override
   State<ContestView> createState() => _ContestViewState();
@@ -96,8 +96,7 @@ class _ContestViewState extends State<ContestView> {
           .child('contest_${contestQuestions[i].contestId}')
           .child('/Submissions')
           .child('/question_${contestQuestions[i].questionId}')
-          .child(
-              '/${widget.email!.replaceAll(RegExp('@iiitr.ac.in'), '')}');
+          .child('/${widget.email!.replaceAll(RegExp('@iiitr.ac.in'), '')}');
       try {
         final downloadUrl = await ref.getDownloadURL();
         String newCodeFile = await http.read(Uri.parse(downloadUrl));
