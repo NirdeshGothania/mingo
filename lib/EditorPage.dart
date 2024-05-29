@@ -129,6 +129,7 @@ class EditorPageState extends State<EditorPage> {
   void violationWarning() {
     _violationActive = true;
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AnimatedBuilder(
