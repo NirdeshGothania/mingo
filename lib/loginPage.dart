@@ -217,7 +217,10 @@ class loginPage extends State<loginPage1> {
                       )),
                 ],
               ),
-              ElevatedButton(
+              const SizedBox(
+                height: 10,
+              ),
+              FilledButton(
                 onPressed: isLoading
                     ? null
                     : () {
@@ -244,7 +247,10 @@ class loginPage extends State<loginPage1> {
                   ],
                 ),
               ),
-              ElevatedButton(
+              const SizedBox(
+                height: 10,
+              ),
+              FilledButton(
                 onPressed: isLoading
                     ? null
                     : () {
