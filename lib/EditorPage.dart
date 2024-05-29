@@ -63,6 +63,7 @@ class EditorPageState extends State<EditorPage> {
   final _sampleTestCasesController = QuillController.basic();
   final FocusNode _focusNodekey = FocusNode();
   var count = 0;
+  bool _isLoadingRunCode = false;
 
   @override
   void initState() {
@@ -566,31 +567,45 @@ class EditorPageState extends State<EditorPage> {
                                 ),
                                 textAlign: TextAlign.right,
                               ),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                width: 100,
-                                child: FilledButton.icon(
-                                  onPressed: () {
-                                    _controller.weights = [0.3, 0.7];
-                                    setState(() {});
-                                    final res =
-                                        _codeController!.text.toString();
-                                    final inp =
-                                        _inputController.text.toString();
-                                    print(res);
-                                    print(inp);
-                                    runCode(res, inp);
-                                  },
-                                  icon: const Icon(
-                                    Icons.play_arrow,
-                                  ),
-                                  label: const Text(
-                                    'Run',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
+                              FilledButton.icon(
+                                onPressed: _isLoadingRunCode
+                                    ? null
+                                    : () {
+                                        setState(() {
+                                          _isLoadingRunCode = true;
+                                        });
+                                        _controller.weights = [0.3, 0.7];
+                                        final res =
+                                            _codeController!.text.toString();
+                                        final inp =
+                                            _inputController.text.toString();
+                                        print(res);
+                                        print(inp);
+                                        runCode(res, inp);
+                                      },
+                                icon: _isLoadingRunCode
+                                    ? const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Icon(Icons.play_arrow),
+                                label: _isLoadingRunCode
+                                    ? const Text(
+                                        'Running...',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : const Text(
+                                        'Run',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                               ),
                               FilledButton.icon(
                                 onPressed: () {
@@ -630,25 +645,11 @@ class EditorPageState extends State<EditorPage> {
                                         // statesController: stateControl,
                                         // statesController: null,
                                         icon: const Icon(Icons.play_arrow),
-                                        label: const Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Icon(
-                                              Icons.play_arrow,
-                                              size: 20,
-                                            ),
-                                            // SizedBox(width: 5),
-
-                                            // Adjust the spacing as needed
-
-                                            Text(
-                                              'Submit',
-                                              style: TextStyle(
-                                                  // fontSize: 12,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
+                                        label: const Text(
+                                          'Submit',
+                                          style: TextStyle(
+                                              // fontSize: 12,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                     ),
@@ -729,6 +730,7 @@ class EditorPageState extends State<EditorPage> {
       );
       output = '';
       output = output + response.body;
+      _isLoadingRunCode = false;
       // Check the status code
       if (response.statusCode == 200) {
         print(
@@ -745,6 +747,9 @@ class EditorPageState extends State<EditorPage> {
       }
       setState(() {});
     } catch (e) {
+      setState(() {
+        _isLoadingRunCode = false;
+      });
       print('Exception: $e');
       // Handle exception and update the UI accordingly
     }

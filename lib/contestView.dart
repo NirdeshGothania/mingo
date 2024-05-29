@@ -181,9 +181,11 @@ class _ContestViewState extends State<ContestView> {
                                 contestQuestions[index].questionId];
                             return ListTile(
                               title: FilledButton(
-                                onPressed: () {
-                                  setController(index);
-                                },
+                                onPressed: (quesIndex == index)
+                                    ? null
+                                    : () {
+                                        setController(index);
+                                      },
                                 child: Text(Document.fromDelta(
                                         contestQuestions[index].contestName)
                                     .toPlainText()
