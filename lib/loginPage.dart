@@ -220,36 +220,36 @@ class loginPage extends State<loginPage1> {
               const SizedBox(
                 height: 10,
               ),
-              // FilledButton(
-              //   onPressed: isLoading
-              //       ? null
-              //       : () {
-              //           String emailF = "cs21b1067@iiitr.ac.in";
-              //           String passwordF = '123456789';
+              FilledButton(
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        String emailF = "cs21b1067@iiitr.ac.in";
+                        String passwordF = '123456789';
 
-              //           login(emailF, passwordF);
-              //         },
-              //   child: Stack(
-              //     alignment: Alignment.center,
-              //     children: [
-              //       if (!isLoading)
-              //         const Text(
-              //           'Admin Login',
-              //         ),
-              //       if (isLoading)
-              //         const SizedBox(
-              //           width: 20,
-              //           height: 20,
-              //           child: CircularProgressIndicator(
-              //             color: Colors.white,
-              //           ),
-              //         ),
-              //     ],
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 10,
-              // ),
+                        login(emailF, passwordF);
+                      },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (!isLoading)
+                      const Text(
+                        'Admin Login',
+                      ),
+                    if (isLoading)
+                      const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               FilledButton(
                 onPressed: isLoading
                     ? null

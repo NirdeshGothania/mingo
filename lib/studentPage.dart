@@ -209,6 +209,15 @@ class StudentPage extends State<StudentPage1> {
                             fontStyle: FontStyle.italic));
                   }
 
+                  var et = (contestData['endTime'] as String).split(':');
+                  var endDateTime = DateFormat('dd-MM-yyyy:hh:mm').parse(
+                      contestData['endDate'] +
+                          ':${et[0].padLeft(2, '0')}:${et[1].padLeft(2, '0')}');
+                  var st = (contestData['startTime'] as String).split(':');
+                  var startDateTime = DateFormat('dd-MM-yyyy:hh:mm').parse(
+                      contestData['startDate'] +
+                          ':${st[0].padLeft(2, '0')}:${st[1].padLeft(2, '0')}');
+
                   return (isRegistered &&
                           contestsList[index].endDate.isAfter(DateTime.now()))
                       ? FilledButton.icon(
@@ -226,9 +235,7 @@ class StudentPage extends State<StudentPage1> {
                           label: const Text("Open Contest"),
                         )
                       : FilledButton.icon(
-                          onPressed: (contestsList[index]
-                                  .startDate
-                                  .isAfter(DateTime.now()))
+                          onPressed: (startDateTime.isAfter(DateTime.now()))
                               ? () {
                                   FirebaseFirestore.instance
                                       .collection('createContest')

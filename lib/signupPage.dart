@@ -38,20 +38,32 @@ class SignupPage extends State<SignupPage1> {
   }
 
   signUp(String rollnumber, String name, String email, String password) async {
+    setState(() {
+      isLoading = true;
+    });
     if (rollnumber == '' || name == '' || email == '' || password == '') {
       showDialog(
           context: context,
           builder: (BuildContext context) {
             return const AlertDialog(title: Text('Fill the required fields'));
           });
+      setState(() {
+        isLoading = false;
+      });
     } else {
       FirebaseAuth auth = FirebaseAuth.instance;
       auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) {
+        setState(() {
+          isLoading = false;
+        });
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const loginPage1()));
       }).onError((error, stackTrace) {
+        setState(() {
+          isLoading = false;
+        });
         toastMessage(error.toString());
       });
     }

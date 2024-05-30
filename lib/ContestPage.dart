@@ -79,11 +79,11 @@ class ContestPage extends State<ContestPage1> {
   }
 
   void _removeTestCases() {
-    if (hiddenTestCase.length >= 3) {
+    if (_controllers.length >= 3) {
       // Ensuring at least one set of test cases remains
-      hiddenTestCase.removeLast();
-      hiddenTestCase.removeLast();
-      hiddenTestCase.removeLast();
+      _controllers.removeLast();
+      _controllers.removeLast();
+      _controllers.removeLast();
       count--; // Decrementing the count when removing test cases
     }
   }
