@@ -218,8 +218,7 @@ class StudentPage extends State<StudentPage1> {
                       contestData['startDate'] +
                           ':${st[0].padLeft(2, '0')}:${st[1].padLeft(2, '0')}');
 
-                  return (isRegistered &&
-                          contestsList[index].endDate.isAfter(DateTime.now()))
+                  return (isRegistered && endDateTime.isAfter(DateTime.now()))
                       ? FilledButton.icon(
                           onPressed: () {
                             Navigator.push(

@@ -55,23 +55,26 @@ class _FinishContestState extends State<FinishContest> {
         ),
         automaticallyImplyLeading: false,
         actions: [
-          FilledButton.icon(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => StudentPage1(
-                    contestQuestions: widget.contestQuestions,
-                    contestDetails: widget.contestDetails,
-                    checkStatus: checkStatus,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FilledButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => StudentPage1(
+                      contestQuestions: widget.contestQuestions,
+                      contestDetails: widget.contestDetails,
+                      checkStatus: checkStatus,
+                    ),
                   ),
-                ),
-              );
-              checkStatus();
-            },
-            icon: const Icon(Icons.chevron_right),
-            label: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Continue'),
+                );
+                checkStatus();
+              },
+              icon: const Icon(Icons.chevron_right),
+              label: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text('Continue'),
+              ),
             ),
           ),
         ],

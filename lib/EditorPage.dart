@@ -64,6 +64,8 @@ class EditorPageState extends State<EditorPage> {
   final FocusNode _focusNodekey = FocusNode();
   var count = 0;
   bool _isLoadingRunCode = false;
+  bool isLoadingSave = false;
+  bool isLoadingSubmit = false;
 
   @override
   void initState() {
@@ -282,7 +284,16 @@ class EditorPageState extends State<EditorPage> {
           'contest_${widget.contestQuestions[i].contestId}/Submissions/question_${widget.contestQuestions[i].questionId}/${SessionConstants.email2!.replaceAll(RegExp('@iiitr.ac.in'), '')}';
       await firebase_storage.FirebaseStorage.instance
           .ref(inputFilePath)
-          .putString(widget.contestQuestions[i].code);
+          .putString(widget.contestQuestions[i].code)
+          .then((p0) {
+        setState(() {
+          isLoadingSave = false;
+        });
+      }).catchError((error) {
+        setState(() {
+          isLoadingSave = false;
+        });
+      });
     }
   }
 
@@ -609,56 +620,84 @@ class EditorPageState extends State<EditorPage> {
                                       ),
                               ),
                               FilledButton.icon(
-                                onPressed: () {
-                                  widget.contestQuestions[quesIndex].code =
-                                      _codeController!.text.toString();
-                                  UploadCodeFiles();
-                                },
-                                icon: const Icon(Icons.save),
-                                label: const Text('Save'),
-                              ),
-                              Container(
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      width: 150,
-                                      child: FilledButton.icon(
-                                        onPressed: () {
-                                          _controller.weights = [0.3, 0.8];
-                                          setState(() {});
-                                          final res =
-                                              _codeController?.text.toString();
-                                          // print(res);
-                                          widget.contestQuestions[quesIndex]
-                                              .code = res!;
-
-                                          UploadCodeFiles();
-                                          test(
-                                              res,
-                                              widget.contestQuestions[quesIndex]
-                                                  .questionId,
-                                              widget.contestQuestions[quesIndex]
-                                                  .contestId,
-                                              SessionConstants.email2!);
-                                        },
-
-                                        // statesController: stateControl,
-                                        // statesController: null,
-                                        icon: const Icon(Icons.play_arrow),
-                                        label: const Text(
-                                          'Submit',
-                                          style: TextStyle(
-                                              // fontSize: 12,
-                                              fontWeight: FontWeight.bold),
+                                onPressed: isLoadingSave
+                                    ? null
+                                    : () {
+                                        setState(() {
+                                          isLoadingSave = true;
+                                        });
+                                        widget.contestQuestions[quesIndex]
+                                                .code =
+                                            _codeController!.text.toString();
+                                        UploadCodeFiles();
+                                      },
+                                icon: isLoadingSave
+                                    ? const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
                                         ),
+                                      )
+                                    : const Icon(Icons.save),
+                                label: isLoadingSave
+                                    ? const Text(
+                                        'Saving...',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : const Text('Save'),
+                              ),
+                              FilledButton.icon(
+                                onPressed: isLoadingSubmit
+                                    ? null
+                                    : () {
+                                        isLoadingSubmit = true;
+                                        _controller.weights = [0.3, 0.8];
+                                        setState(() {});
+                                        final res =
+                                            _codeController?.text.toString();
+                                        // print(res);
+                                        widget.contestQuestions[quesIndex]
+                                            .code = res!;
+
+                                        UploadCodeFiles();
+                                        test(
+                                            res,
+                                            widget.contestQuestions[quesIndex]
+                                                .questionId,
+                                            widget.contestQuestions[quesIndex]
+                                                .contestId,
+                                            SessionConstants.email2!);
+                                      },
+                                icon: isLoadingSubmit
+                                    ? const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Icon(Icons.play_arrow),
+                                label: isLoadingSubmit
+                                    ? const Text(
+                                        'Submitting...',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : const Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                            // fontSize: 12,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                  ],
-                                ),
+                              ),
+                              const SizedBox(
+                                width: 4,
                               ),
                               FilledButton(
                                   onPressed: () {
@@ -781,15 +820,24 @@ class EditorPageState extends State<EditorPage> {
         // Read the response body
         var responseBody = response.body;
         print('Response body: $responseBody');
+        setState(() {
+          isLoadingSubmit = false;
+        });
         // You can handle or process the response body as needed
       } else {
         print('Error: ${response.statusCode}');
         print('Error message: ${response.body}');
+        setState(() {
+          isLoadingSubmit = false;
+        });
         // Handle the error and update the UI accordingly
       }
       setState(() {});
     } catch (e) {
       print('Exception: $e');
+      setState(() {
+        isLoadingSubmit = false;
+      });
 
       // Handle exception and update the UI accordingly
     }

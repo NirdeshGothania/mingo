@@ -31,6 +31,7 @@ class _OpenContestState extends State<OpenContest> {
   late List<ContestQuestion> contestQuestions;
   DateTime? startDateTime;
   DateTime? endDateTime;
+  bool isLoadingCodeSubmit = false;
 
   @override
   void initState() {
@@ -193,16 +194,190 @@ class _OpenContestState extends State<OpenContest> {
                 height: 20,
               ),
 
+              // FutureBuilder(
+              //   future: fetchData(),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.connectionState == ConnectionState.done) {
+              //       return FilledButton.icon(
+              //           onPressed: (!allowEnter)
+              //               ? () {
+              //                   showDialog(
+              //                       context: context,
+              //                       builder: (BuildContext context) {
+              //                         return AlertDialog(
+              //                           title: const Text("Enter the Code"),
+              //                           content: CustomTextField(
+              //                             iconData: Icons.password,
+              //                             onSubmitted: (_) async {
+              //                               var code =
+              //                                   codeController.text.toString();
+              //                               if (code ==
+              //                                   widget
+              //                                       .contestDetails!['code']) {
+              //                                 await FirebaseFirestore.instance
+              //                                     .collection('createContest')
+              //                                     .doc(widget.contestDetails![
+              //                                         'contestId'])
+              //                                     .collection('register')
+              //                                     .doc(SessionConstants.email2)
+              //                                     .set({
+              //                                   'status': 1,
+              //                                 }).then((value) {
+              //                                   Navigator.of(context)
+              //                                     ..pop()
+              //                                     ..push(
+              //                                       MaterialPageRoute(
+              //                                         builder: (context) =>
+              //                                             EditorPage(
+              //                                           contestQuestions:
+              //                                               contestQuestions,
+              //                                           contestDetails: widget
+              //                                               .contestDetails,
+              //                                         ),
+              //                                       ),
+              //                                     );
+              //                                   print(
+              //                                       'Entered Contest successfully');
+              //                                 }).catchError((error) {
+              //                                   print(
+              //                                       'Entered Contest: $error');
+              //                                 });
+              //                               } else {
+              //                                 Navigator.of(context).pop();
+              //                                 ScaffoldMessenger.of(context)
+              //                                     .showSnackBar(
+              //                                   const SnackBar(
+              //                                     content:
+              //                                         Text('Incorrect Code'),
+              //                                     backgroundColor: Colors.red,
+              //                                   ),
+              //                                 );
+              //                               }
+              //                             },
+              //                             controller: codeController,
+              //                             hintText: 'Code',
+              //                             obscureText: true,
+              //                           ),
+              //                           actions: [
+              //                             FilledButton(
+              //                               onPressed: () {
+              //                                 Navigator.of(context)
+              //                                     .pop(); // Close the dialog
+              //                               },
+              //                               child: const Text("Cancel"),
+              //                             ),
+              //                             FilledButton(
+              //                               onPressed: isLoadingCodeSubmit
+              //                                   ? null
+              //                                   : () async {
+              //                                       setState(() {
+              //                                         isLoadingCodeSubmit =
+              //                                             true;
+              //                                       });
+              //                                       var code = codeController
+              //                                           .text
+              //                                           .toString();
+              //                                       if (code ==
+              //                                           widget.contestDetails![
+              //                                               'code']) {
+              //                                         await FirebaseFirestore
+              //                                             .instance
+              //                                             .collection(
+              //                                                 'createContest')
+              //                                             .doc(widget
+              //                                                     .contestDetails![
+              //                                                 'contestId'])
+              //                                             .collection(
+              //                                                 'register')
+              //                                             .doc(SessionConstants
+              //                                                 .email2)
+              //                                             .set({
+              //                                           'status': 1,
+              //                                         }).then((value) {
+              //                                           setState(() {
+              //                                             isLoadingCodeSubmit =
+              //                                                 false;
+              //                                           });
+              //                                           Navigator.of(context)
+              //                                             ..pop()
+              //                                             ..push(
+              //                                               MaterialPageRoute(
+              //                                                 builder:
+              //                                                     (context) =>
+              //                                                         EditorPage(
+              //                                                   contestQuestions:
+              //                                                       contestQuestions,
+              //                                                   contestDetails:
+              //                                                       widget
+              //                                                           .contestDetails,
+              //                                                 ),
+              //                                               ),
+              //                                             );
+              //                                           print(
+              //                                               'Entered Contest successfully');
+              //                                         }).catchError((error) {
+              //                                           setState(() {
+              //                                             isLoadingCodeSubmit =
+              //                                                 false;
+              //                                           });
+              //                                           print(
+              //                                               'Entered Contest: $error');
+              //                                         });
+              //                                       } else {
+              //                                         Navigator.of(context)
+              //                                             .pop();
+              //                                         ScaffoldMessenger.of(
+              //                                                 context)
+              //                                             .showSnackBar(
+              //                                           const SnackBar(
+              //                                             content: Text(
+              //                                                 'Incorrect Code'),
+              //                                             backgroundColor:
+              //                                                 Colors.red,
+              //                                           ),
+              //                                         );
+              //                                       }
+              //                                     },
+              //                               child: isLoadingCodeSubmit
+              //                                   ? const SizedBox(
+              //                                       width: 24,
+              //                                       height: 24,
+              //                                       child:
+              //                                           CircularProgressIndicator(
+              //                                         color: Colors.white,
+              //                                         strokeWidth: 2,
+              //                                       ),
+              //                                     )
+              //                                   : const Text("Submit"),
+              //                             ),
+              //                           ],
+              //                         );
+              //                       });
+              //                 }
+              //               : null,
+              //           icon: const Icon(Icons.arrow_right),
+              //           label: const Text('Enter Contest'));
+              //     } else {
+              //       return const FilledButton(
+              //         onPressed: null,
+              //         child: Text('Loading...'),
+              //       );
+              //     }
+              //   },
+              // ),
+
               FutureBuilder(
                 future: fetchData(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return FilledButton.icon(
-                        onPressed: (!allowEnter)
-                            ? () {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
+                      onPressed: (!allowEnter)
+                          ? () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return StatefulBuilder(
+                                    builder: (context, setState) {
                                       return AlertDialog(
                                         title: const Text("Enter the Code"),
                                         content: CustomTextField(
@@ -213,6 +388,9 @@ class _OpenContestState extends State<OpenContest> {
                                             if (code ==
                                                 widget
                                                     .contestDetails!['code']) {
+                                              setState(() {
+                                                isLoadingCodeSubmit = true;
+                                              });
                                               await FirebaseFirestore.instance
                                                   .collection('createContest')
                                                   .doc(widget.contestDetails![
@@ -222,6 +400,9 @@ class _OpenContestState extends State<OpenContest> {
                                                   .set({
                                                 'status': 1,
                                               }).then((value) {
+                                                setState(() {
+                                                  isLoadingCodeSubmit = false;
+                                                });
                                                 Navigator.of(context)
                                                   ..pop()
                                                   ..push(
@@ -238,6 +419,9 @@ class _OpenContestState extends State<OpenContest> {
                                                 print(
                                                     'Entered Contest successfully');
                                               }).catchError((error) {
+                                                setState(() {
+                                                  isLoadingCodeSubmit = false;
+                                                });
                                                 print(
                                                     'Entered Contest: $error');
                                               });
@@ -257,7 +441,7 @@ class _OpenContestState extends State<OpenContest> {
                                           hintText: 'Code',
                                           obscureText: true,
                                         ),
-                                        actions: <Widget>[
+                                        actions: [
                                           FilledButton(
                                             onPressed: () {
                                               Navigator.of(context)
@@ -266,62 +450,100 @@ class _OpenContestState extends State<OpenContest> {
                                             child: const Text("Cancel"),
                                           ),
                                           FilledButton(
-                                            onPressed: () async {
-                                              var code = codeController.text
-                                                  .toString();
-                                              if (code ==
-                                                  widget.contestDetails![
-                                                      'code']) {
-                                                await FirebaseFirestore.instance
-                                                    .collection('createContest')
-                                                    .doc(widget.contestDetails![
-                                                        'contestId'])
-                                                    .collection('register')
-                                                    .doc(
-                                                        SessionConstants.email2)
-                                                    .set({
-                                                  'status': 1,
-                                                }).then((value) {
-                                                  Navigator.of(context)
-                                                    ..pop()
-                                                    ..push(
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            EditorPage(
-                                                          contestQuestions:
-                                                              contestQuestions,
-                                                          contestDetails: widget
-                                                              .contestDetails,
+                                            onPressed: isLoadingCodeSubmit
+                                                ? null
+                                                : () async {
+                                                    setState(() {
+                                                      isLoadingCodeSubmit =
+                                                          true;
+                                                    });
+                                                    var code = codeController
+                                                        .text
+                                                        .toString();
+                                                    if (code ==
+                                                        widget.contestDetails![
+                                                            'code']) {
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              'createContest')
+                                                          .doc(widget
+                                                                  .contestDetails![
+                                                              'contestId'])
+                                                          .collection(
+                                                              'register')
+                                                          .doc(SessionConstants
+                                                              .email2)
+                                                          .set({
+                                                        'status': 1,
+                                                      }).then((value) {
+                                                        setState(() {
+                                                          isLoadingCodeSubmit =
+                                                              false;
+                                                        });
+                                                        Navigator.of(context)
+                                                          ..pop()
+                                                          ..push(
+                                                            MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      EditorPage(
+                                                                contestQuestions:
+                                                                    contestQuestions,
+                                                                contestDetails:
+                                                                    widget
+                                                                        .contestDetails,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        print(
+                                                            'Entered Contest successfully');
+                                                      }).catchError((error) {
+                                                        setState(() {
+                                                          isLoadingCodeSubmit =
+                                                              false;
+                                                        });
+                                                        print(
+                                                            'Entered Contest: $error');
+                                                      });
+                                                    } else {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Text(
+                                                              'Incorrect Code'),
+                                                          backgroundColor:
+                                                              Colors.red,
                                                         ),
-                                                      ),
-                                                    );
-                                                  print(
-                                                      'Entered Contest successfully');
-                                                }).catchError((error) {
-                                                  print(
-                                                      'Entered Contest: $error');
-                                                });
-                                              } else {
-                                                Navigator.of(context).pop();
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content:
-                                                        Text('Incorrect Code'),
-                                                    backgroundColor: Colors.red,
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            child: const Text("Submit"),
+                                                      );
+                                                    }
+                                                  },
+                                            child: isLoadingCodeSubmit
+                                                ? const SizedBox(
+                                                    width: 24,
+                                                    height: 24,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color: Colors.white,
+                                                      strokeWidth: 2,
+                                                    ),
+                                                  )
+                                                : const Text("Submit"),
                                           ),
                                         ],
                                       );
-                                    });
-                              }
-                            : null,
-                        icon: const Icon(Icons.arrow_right),
-                        label: const Text('Enter Contest'));
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          : null,
+                      icon: const Icon(Icons.arrow_right),
+                      label: const Text('Enter Contest'),
+                    );
                   } else {
                     return const FilledButton(
                       onPressed: null,
@@ -330,6 +552,7 @@ class _OpenContestState extends State<OpenContest> {
                   }
                 },
               ),
+
               const SizedBox(
                 height: 28,
               ),
