@@ -10,6 +10,8 @@ class ContestListItem {
   late String name;
   late DateTime startDate;
   late DateTime endDate;
+  late int totalMarks;
+  late String status;
 }
 
 class CompletedContest extends StatefulWidget {
@@ -41,6 +43,73 @@ class _CompletedContestState extends State<CompletedContest> {
     }
   }
 
+  Future<int> fetchTotalMarks(String contestId) async {
+    try {
+      var snapshot = await FirebaseFirestore.instance
+          .collection('createContest')
+          .doc(contestId)
+          .collection('register')
+          .doc(SessionConstants.email2)
+          .collection('result')
+          .get();
+
+      int total = snapshot.docs.fold(0, (sum, doc) {
+        var marks = doc.data()['marks'] as int? ?? 0;
+        return sum + marks;
+      });
+
+      return total;
+    } catch (e) {
+      print('Error fetching total marks: $e');
+      return 0;
+    }
+  }
+
+  TextStyle getStatusTextStyle(String status) {
+    switch (status) {
+      case 'Violated':
+        return const TextStyle(
+          color: Colors.red,
+          fontWeight: FontWeight.bold,
+        );
+      case 'Submitted':
+        return const TextStyle(
+          color: Colors.green,
+          fontWeight: FontWeight.bold,
+        );
+      default:
+        return const TextStyle();
+    }
+  }
+
+  Future<String> fetchStatusText(String contestId) async {
+    try {
+      var snapshot = await FirebaseFirestore.instance
+          .collection('createContest')
+          .doc(contestId)
+          .collection('register')
+          .doc(SessionConstants.email2)
+          .get();
+
+      var status = snapshot.data()?['status'] as int? ?? 0;
+
+      switch (status) {
+        case -1:
+          return 'Violated';
+        case 2:
+          return 'Submitted';
+        case 1:
+          return 'Entered';
+        case 0:
+        default:
+          return 'Registered';
+      }
+    } catch (e) {
+      print('Error fetching status: $e');
+      return 'Unknown';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,18 +135,23 @@ class _CompletedContestState extends State<CompletedContest> {
             future: Future.wait(contests.map((contest) async {
               final contestData = contest.data() as Map<String, dynamic>;
               var et = (contestData['endTime'] as String).split(':');
-              var endDateTime = DateFormat('dd-MM-yyyy:hh:mm').parse(
+              var endDateTime = DateFormat('dd-MM-yyyy:HH:mm').parse(
                   contestData['endDate'] +
                       ':${et[0].padLeft(2, '0')}:${et[1].padLeft(2, '0')}');
               var st = (contestData['startTime'] as String).split(':');
-              var startDateTime = DateFormat('dd-MM-yyyy:hh:mm').parse(
+              var startDateTime = DateFormat('dd-MM-yyyy:HH:mm').parse(
                   contestData['startDate'] +
                       ':${st[0].padLeft(2, '0')}:${st[1].padLeft(2, '0')}');
+
+              int totalMarks = await fetchTotalMarks(contest.id);
+              String status = await fetchStatusText(contest.id);
 
               contestsList.add(ContestListItem()
                 ..name = contestData['contestName']
                 ..startDate = startDateTime
-                ..endDate = endDateTime);
+                ..endDate = endDateTime
+                ..totalMarks = totalMarks
+                ..status = status);
 
               bool registered = await checkStatus(contest.id);
 
@@ -99,6 +173,13 @@ class _CompletedContestState extends State<CompletedContest> {
                   final contest = filteredContests[index];
                   final contestData = contest.data() as Map<String, dynamic>;
                   final contestName = contestData['contestName'];
+                  final contestListItem = contestsList.firstWhere(
+                      (item) => item.name == contestName,
+                      orElse: () => ContestListItem());
+
+                  var et = (contestData['endTime'] as String).split(':');
+                  var st = (contestData['startTime'] as String).split(':');
+
                   return ListTile(
                     title: Text(contestName),
                     subtitle: Column(
@@ -106,10 +187,24 @@ class _CompletedContestState extends State<CompletedContest> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Start Date: ${contestData['startDate']} Start time: ${contestData['startTime']}",
+                          "Start Date: ${contestData['startDate']} Start time: ${st[0].padLeft(2, '0')}:${st[1].padLeft(2, '0')}",
                         ),
                         Text(
-                          "End Date: ${contestData['endDate']} End time: ${contestData['endTime']}",
+                          "End Date: ${contestData['endDate']} End time: ${et[0].padLeft(2, '0')}:${et[1].padLeft(2, '0')}",
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Status: ",
+                            ),
+                            Text(
+                              contestListItem.status,
+                              style: getStatusTextStyle(contestListItem.status),
+                            )
+                          ],
+                        ),
+                        Text(
+                          "Total Marks: ${contestListItem.totalMarks}",
                         ),
                       ],
                     ),
