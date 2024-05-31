@@ -10,6 +10,7 @@ import 'package:mingo/common_widgets.dart';
 import 'package:mingo/forgot_passwordPage.dart';
 import 'package:mingo/signupPage.dart';
 import 'package:mingo/studentPage.dart';
+import 'package:mingo/test.dart';
 
 import 'sessionConstants.dart';
 
@@ -220,33 +221,33 @@ class loginPage extends State<loginPage1> {
               const SizedBox(
                 height: 10,
               ),
-              // FilledButton(
-              //   onPressed: isLoading
-              //       ? null
-              //       : () {
-              //           String emailF = "cs21b1067@iiitr.ac.in";
-              //           String passwordF = '123456789';
+              FilledButton(
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        String emailF = "cs21b1067@iiitr.ac.in";
+                        String passwordF = '123456789';
 
-              //           login(emailF, passwordF);
-              //         },
-              //   child: Stack(
-              //     alignment: Alignment.center,
-              //     children: [
-              //       if (!isLoading)
-              //         const Text(
-              //           'Admin Login',
-              //         ),
-              //       if (isLoading)
-              //         const SizedBox(
-              //           width: 20,
-              //           height: 20,
-              //           child: CircularProgressIndicator(
-              //             color: Colors.white,
-              //           ),
-              //         ),
-              //     ],
-              //   ),
-              // ),
+                        login(emailF, passwordF);
+                      },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (!isLoading)
+                      const Text(
+                        'Admin Login',
+                      ),
+                    if (isLoading)
+                      const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -277,6 +278,16 @@ class loginPage extends State<loginPage1> {
                   ],
                 ),
               ),
+              FilledButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ContestSelectionDialog(),
+                      ),
+                    );
+                  },
+                  child: const Text('Test'))
             ],
           ),
         ),

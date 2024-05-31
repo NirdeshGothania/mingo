@@ -14,6 +14,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
   const MyApp({Key? key}) : super(key: key);
 
   @override
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
+      navigatorKey: navigatorKey,
       home: const SplashPage1(),
     );
   }

@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-// import 'package:mingo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +23,134 @@ class AdminPage extends State<AdminPage1> {
   final LinkedHashMap<Delta, dynamic> contestDetails =
       LinkedHashMap<Delta, dynamic>();
   var adminName = '';
+  String searchText = '';
+  DateTime? selectedDate;
+  final List<String> selectedContests = [];
+
+  void handleSearch(String value) {
+    setState(() {
+      searchText = value;
+    });
+  }
+
+  void handleDateSelect(DateTime? date) {
+    setState(() {
+      selectedDate = date;
+    });
+  }
+
+  // void navigateToTablePage() {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => TablePage(selectedContests: selectedContests),
+  //     ),
+  //   );
+  // }
+
+  void handleCheckbox(String contestId, bool isChecked) {
+    setState(() {
+      if (isChecked) {
+        selectedContests.add(contestId);
+      } else {
+        selectedContests.remove(contestId);
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     getName();
   }
+
+  void showViewTableDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Select Contests"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Search Contests',
+                  ),
+                  onChanged: (value) {
+                    // Implement search logic here
+                  },
+                ),
+                const SizedBox(height: 10),
+                // Add a date range picker here if needed
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('createContest')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    final contests = snapshot.data!.docs;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: contests.length,
+                      itemBuilder: (context, index) {
+                        final contest = contests[index];
+                        final contestData =
+                            contest.data() as Map<String, dynamic>;
+                        return CheckboxListTile(
+                          title: Text(contestData['contestName']),
+                          value: selectedContests.contains(contest.id),
+                          onChanged: (bool? value) {
+                            setState(() {
+                              if (value == true) {
+                                selectedContests.add(contest.id);
+                              } else {
+                                selectedContests.remove(contest.id);
+                              }
+                            });
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // navigateToTablePage();
+              },
+              child: const Text("Proceed"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// void _proceedToTablePage() {
+//   Navigator.push(
+//     context,
+//     MaterialPageRoute(
+//       builder: (context) => TablePage(selectedContests: selectedContests),
+//     ),
+//   );
+// }
 
   void getName() async {
     await FirebaseFirestore.instance
@@ -42,6 +163,87 @@ class AdminPage extends State<AdminPage1> {
         adminName = nameData!['name'];
       });
     });
+  }
+
+  Widget buildViewTableDialog() {
+    return AlertDialog(
+      title: const Text('View Table'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            onChanged: handleSearch,
+            decoration: const InputDecoration(labelText: 'Search'),
+          ),
+          const SizedBox(height: 10),
+          TextButton(
+            onPressed: () async {
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2020),
+                lastDate: DateTime(2101),
+              );
+              handleDateSelect(pickedDate);
+            },
+            child: Text(selectedDate != null
+                ? 'Selected Date: ${DateFormat('dd/MM/yyyy').format(selectedDate!)}'
+                : 'Select Date'),
+          ),
+          const SizedBox(height: 10),
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('createContest')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              final contests = snapshot.data!.docs;
+              final filteredContests = contests.where((contest) {
+                final contestData = contest.data() as Map<String, dynamic>;
+                final contestName =
+                    contestData['contestName'].toString().toLowerCase();
+                return contestName.contains(searchText.toLowerCase()) &&
+                    (selectedDate == null ||
+                        contestData['endDate'] == selectedDate!.toString());
+              }).toList();
+              return Column(
+                children: filteredContests.map((contest) {
+                  final contestData = contest.data() as Map<String, dynamic>;
+                  final contestId = contest.id;
+                  return CheckboxListTile(
+                    title: Text(contestData['contestName']),
+                    value: selectedContests.contains(contestId),
+                    onChanged: (isChecked) {
+                      handleCheckbox(contestId, isChecked!);
+                    },
+                  );
+                }).toList(),
+              );
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // navigateToTablePage();
+          },
+          child: const Text('Proceed'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -57,6 +259,16 @@ class AdminPage extends State<AdminPage1> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
+                FilledButton.icon(
+                  onPressed: () {
+                    showViewTableDialog();
+                  },
+                  icon: const Icon(Icons.table_chart),
+                  label: const Text('View Table'),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
                 Center(
                     child: FilledButton.icon(
                         onPressed: () {
@@ -203,14 +415,14 @@ class AdminPage extends State<AdminPage1> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                 },
                 child: const Text("Cancel"),
               ),
               TextButton(
                 onPressed: () {
                   deleteContest(contestId);
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                 },
                 child: const Text("Delete"),
               ),
