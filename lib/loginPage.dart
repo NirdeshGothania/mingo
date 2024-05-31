@@ -278,16 +278,16 @@ class loginPage extends State<loginPage1> {
                   ],
                 ),
               ),
-              FilledButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ContestSelectionDialog(),
-                      ),
-                    );
-                  },
-                  child: const Text('Test'))
+              // FilledButton(
+              //     onPressed: () {
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => const TableView(),
+              //         ),
+              //       );
+              //     },
+              //     child: const Text('Test'))
             ],
           ),
         ),
