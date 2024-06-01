@@ -193,10 +193,13 @@ class _TablePageState extends State<TablePage> {
       appBar: CustomAppbar(
         title: const Text('Student Contest Participation'),
         actions: [
-          FilledButton.icon(
-            icon: const Icon(Icons.download),
-            onPressed: _studentsData.isEmpty ? null : _exportToCSV,
-            label: const Text('Export'),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FilledButton.icon(
+              icon: const Icon(Icons.download),
+              onPressed: _studentsData.isEmpty ? null : _exportToCSV,
+              label: const Text('Export'),
+            ),
           ),
         ],
       ),
@@ -226,7 +229,11 @@ class _TablePageState extends State<TablePage> {
                         _contestNames[contestId] ?? 'Unknown Contest',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ))),
-                  const DataColumn(label: Text('Total Marks')),
+                  const DataColumn(
+                      label: Text(
+                    'Total Marks',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
                 ],
                 rows: List<DataRow>.generate(
                   _studentsData.length,
