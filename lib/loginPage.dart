@@ -10,7 +10,6 @@ import 'package:mingo/common_widgets.dart';
 import 'package:mingo/forgot_passwordPage.dart';
 import 'package:mingo/signupPage.dart';
 import 'package:mingo/studentPage.dart';
-import 'package:mingo/test.dart';
 
 import 'sessionConstants.dart';
 
@@ -278,7 +277,6 @@ class loginPage extends State<loginPage1> {
                   ],
                 ),
               ),
-              
             ],
           ),
         ),

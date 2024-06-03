@@ -34,13 +34,16 @@ class addQuestionPage extends State<addQuestionPage1> {
           'Add Question',
         ),
         actions: [
-          FilledButton.icon(
-            onPressed: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const AdminPage1()));
-            },
-            icon: const Icon(Icons.create),
-            label: const Text('Create Contest'),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FilledButton.icon(
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const AdminPage1()));
+              },
+              icon: const Icon(Icons.create),
+              label: const Text('Create Contest'),
+            ),
           )
         ],
       ),
@@ -55,7 +58,7 @@ class addQuestionPage extends State<addQuestionPage1> {
               var emptyJson = const [
                 {'insert': '\n'}
               ];
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ContestPage1(
@@ -77,6 +80,7 @@ class addQuestionPage extends State<addQuestionPage1> {
                   ),
                 ),
               );
+
             },
             icon: const Icon(Icons.add),
             label: const Text('Add Question'),
@@ -130,7 +134,7 @@ class addQuestionPage extends State<addQuestionPage1> {
                             children: [
                               FilledButton.icon(
                                 onPressed: () {
-                                  Navigator.pushReplacement(
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ContestPage1(
