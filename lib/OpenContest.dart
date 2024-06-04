@@ -199,7 +199,8 @@ class _OpenContestState extends State<OpenContest> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return FilledButton.icon(
-                      onPressed: (!allowEnter)
+                      onPressed: (allowEnter ||
+                              startDateTime!.isBefore(DateTime.now()))
                           ? () {
                               showDialog(
                                 context: context,
