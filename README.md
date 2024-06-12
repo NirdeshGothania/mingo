@@ -90,11 +90,11 @@ Code Arena significantly reduces the administrative burden on TAs, enhances the 
 ## Installation
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/yourusername/code-arena.git
+   git clone https://github.com/NirdeshGothania/mingo
 
 2. **Navigate to the project directory:**
    ```sh
-   cd code-arena
+   cd mingo
 
 3. **Install frontend dependencies:**
    ```sh
