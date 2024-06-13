@@ -92,26 +92,12 @@ Code Arena significantly reduces the administrative burden on TAs, enhances the 
    ```sh
    git clone https://github.com/NirdeshGothania/mingo
 
-2. **Navigate to the project directory:**
-   ```sh
-   cd mingo
-
-3. **Install frontend dependencies:**
+2. **Install frontend dependencies:**
    ```sh
    flutter pub get
 
-4. **Install backend dependencies:**
-   ```sh
-   cd backend
-   npm install
-
 ## Usage
-1. **Run the backend server:**
-   ```sh
-   cd backend
-   npm start
-
-2. **Run the frontend application:**
+1. **Run the frontend application:**
    ```sh
    flutter run
 
